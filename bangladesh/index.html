@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explore 100 historic and traditional heritage sites across all eight divisions of Bangladesh.">
+  <meta name="theme-color" content="#123c35">
+  <title>Bangladesh Unfolded | 100 Heritage Sites</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Bangladesh Unfolded home">
+      <span class="brand-mark" aria-hidden="true">BD</span>
+      <span>Bangladesh <em>Unfolded</em></span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#destinations">Heritage sites</a>
+      <a href="#plan">Travel notes</a>
+      <button class="nav-button" id="header-credits-button" type="button">Photo credits</button>
+    </nav>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Eight divisions. 100 heritage places.</p>
+        <h1 id="hero-title">Trace the places that shaped Bangladesh.</h1>
+        <p class="hero-intro">From old mosques and temples to palaces, forts, literary homes, and memorial landmarks, explore a living record of the country’s architecture, memory, and traditions.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#destinations">Explore 100 sites <span aria-hidden="true">↓</span></a>
+          <a class="text-link" href="#plan">Before you go <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="hero-note"><span aria-hidden="true">✦</span> A heritage catalogue across Bangladesh’s eight divisions</p>
+      </div>
+      <div class="hero-image-wrap">
+        <img class="hero-image" src="images/paharpur.jpg" width="1920" height="1293" alt="Aerial view of the brick platforms and central shrine at Somapura Mahavihara" fetchpriority="high">
+        <div class="hero-caption">
+          <span>Somapura Mahavihara</span>
+          <span>Rajshahi Division</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="directory section-shell" id="destinations" aria-labelledby="destinations-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">The heritage collection</p>
+          <h2 id="destinations-title">A hundred places to begin.</h2>
+        </div>
+        <p>Explore 100 historic and traditional sites grouped by the user’s division list. Exact, verified photographs appear where available; other entries remain useful text records.</p>
+      </div>
+
+      <form class="filters" id="filter-form" role="search" aria-label="Filter heritage sites">
+        <div class="field search-field">
+          <label for="search-input">Search heritage sites</label>
+          <input id="search-input" type="search" name="search" placeholder="Try “mosque” or “palace”" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="division-filter">Division</label>
+          <select id="division-filter" name="division">
+            <option value="">All divisions</option>
+            <option value="Barishal">Barishal</option>
+            <option value="Chattogram">Chattogram</option>
+            <option value="Dhaka">Dhaka</option>
+            <option value="Khulna">Khulna</option>
+            <option value="Mymensingh">Mymensingh</option>
+            <option value="Rajshahi">Rajshahi</option>
+            <option value="Rangpur">Rangpur</option>
+            <option value="Sylhet">Sylhet</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="category-filter">Type</label>
+          <select id="category-filter" name="category">
+            <option value="">All types</option>
+            <option value="heritage">Heritage</option>
+            <option value="architecture">Architecture</option>
+            <option value="culture">Culture</option>
+            <option value="nature">Nature</option>
+            <option value="museum">Museum</option>
+            <option value="religious">Religious</option>
+            <option value="memorial">Memorial</option>
+          </select>
+        </div>
+        <button class="button button-secondary reset-button" id="reset-filters" type="button">Clear filters</button>
+      </form>
+
+      <div class="results-bar">
+        <p id="result-count" role="status" aria-live="polite" aria-atomic="true">Showing all 100 heritage sites</p>
+        <p>Only exact, free-license photographs are shown and credited in every view.</p>
+      </div>
+
+      <div class="destination-grid" id="destination-grid" aria-label="Bangladesh heritage sites"></div>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <span class="empty-state-icon" aria-hidden="true">⌁</span>
+        <h3>No heritage sites found</h3>
+        <p>Try a different search or remove one of your filters.</p>
+        <button class="button button-primary" id="empty-reset" type="button">Show all heritage sites</button>
+      </div>
+
+      <noscript>
+        <p class="noscript-message">Please enable JavaScript to load the 100-site catalogue, search, filters, and destination details.</p>
+      </noscript>
+    </section>
+
+    <section class="travel-notes section-shell" id="plan" aria-labelledby="plan-title">
+      <div class="section-heading compact">
+        <div>
+          <p class="eyebrow">Visit thoughtfully</p>
+          <h2 id="plan-title">History is best experienced with care.</h2>
+        </div>
+      </div>
+      <div class="note-grid">
+        <article class="note-card">
+          <span class="note-number" aria-hidden="true">01</span>
+          <h3>Confirm the conditions</h3>
+          <p>Check current opening hours, access rules, transport, weather, and local notices before setting out. Historic sites can close or change access arrangements.</p>
+        </article>
+        <article class="note-card">
+          <span class="note-number" aria-hidden="true">02</span>
+          <h3>Respect the place</h3>
+          <p>Follow guidance for sacred spaces, fragile ruins, private buildings, and community areas. Ask before photographing people, ceremonies, or restricted interiors.</p>
+        </article>
+        <article class="note-card">
+          <span class="note-number" aria-hidden="true">03</span>
+          <h3>Leave a light trace</h3>
+          <p>Carry out your waste, avoid touching masonry or objects, and support the local guides and communities who keep these places alive.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="detail-dialog" id="detail-dialog" aria-labelledby="detail-title">
+    <div class="dialog-shell">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow" id="detail-division">Division</p>
+          <h2 id="detail-title">Heritage site</h2>
+        </div>
+        <button class="icon-button" id="close-detail" type="button" aria-label="Close heritage site details"><span aria-hidden="true">×</span></button>
+      </div>
+      <div class="detail-layout">
+        <div class="detail-media">
+          <img id="detail-image" src="" alt="" width="1600" height="1067">
+          <p class="image-status" id="detail-image-status" hidden>Image not yet verified for this site. The catalogue entry is still available as text.</p>
+          <p class="photo-caption" id="detail-caption"></p>
+          <p class="photo-credit" id="detail-credit"></p>
+        </div>
+        <div class="detail-copy">
+          <p class="detail-summary" id="detail-summary"></p>
+          <div class="detail-section">
+            <h3>About this place</h3>
+            <p id="detail-description"></p>
+          </div>
+          <div class="detail-facts">
+            <section>
+              <h3>Good to visit</h3>
+              <p id="detail-season"></p>
+            </section>
+            <section>
+              <h3>Getting there</h3>
+              <p id="detail-access"></p>
+            </section>
+            <section>
+              <h3>Keep in mind</h3>
+              <p id="detail-notes"></p>
+            </section>
+          </div>
+          <div class="tag-list" id="detail-tags" aria-label="Heritage categories"></div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="credits-dialog" id="credits-dialog" aria-labelledby="credits-title">
+    <div class="dialog-shell">
+      <div class="dialog-header">
+        <div>
+          <p class="eyebrow">Open photography</p>
+          <h2 id="credits-title">Photo credits</h2>
+        </div>
+        <button class="icon-button" id="close-credits" type="button" aria-label="Close photo credits"><span aria-hidden="true">×</span></button>
+      </div>
+      <p class="credits-intro">Only exact, free-license photographs are listed below. Sites without a verified exact image remain text-only in the catalogue.</p>
+      <div class="credits-list" id="credits-content"></div>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <div>
+      <a class="brand footer-brand" href="#top"><span class="brand-mark" aria-hidden="true">BD</span><span>Bangladesh <em>Unfolded</em></span></a>
+      <p>A living catalogue of Bangladesh’s heritage.</p>
+    </div>
+    <div class="footer-meta">
+      <p>© <span id="current-year">2026</span> Bangladesh Unfolded</p>
+      <button class="link-button" id="footer-credits-button" type="button">Photo credits</button>
+    </div>
+  </footer>
+</body>
+</html>
