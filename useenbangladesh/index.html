@@ -12,9 +12,10 @@
 <!-- installable web app (also the base for the Play Store app) -->
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0f6b4f">
-<link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon.ico">
-<link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/icon-192.png">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/icons/favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/icons/icon-512.png">
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="64 Bangladesh">
 <!-- link previews (Facebook, Messenger, WhatsApp, X): the share banner, not a random photo from the page -->
@@ -609,6 +610,7 @@ function setPhoto(url){
   const img=new Image();
   img.onload=()=>{photoImg=img;$$(".upload .avatar").forEach(a=>{a.style.backgroundImage=`url(${url})`;a.firstElementChild.style.display="none"});
     $$("[data-upload-txt]").forEach(e=>e.textContent="ছবি বদলান");$$("[data-rm-photo]").forEach(e=>e.hidden=false);render()};
+  img.onerror=()=>{try{localStorage.removeItem("bdmap.photo")}catch(e){}};  // a saved photo the browser can no longer decode: drop it instead of keeping a dead value
   img.src=url;
 }
 $$("input[data-photo]").forEach(photoEl=>photoEl.addEventListener("change",()=>{
@@ -621,7 +623,7 @@ $$("input[data-photo]").forEach(photoEl=>photoEl.addEventListener("change",()=>{
       c.getContext("2d").drawImage(src,(src.naturalWidth-s)/2,(src.naturalHeight-s)/2,s,s,0,0,480,480);
       const url=c.toDataURL("image/jpeg",.9);store.set("bdmap.photo",url);setPhoto(url);
     };
-    src.onerror=()=>alert("দুঃখিত, ছবিটি পড়া যায়নি। JPG বা PNG ছবি দিয়ে চেষ্টা করুন।");
+    src.onerror=()=>$$("[data-upload-txt]").forEach(e=>e.textContent="ছবিটি পড়া যায়নি");  // HEIC and friends: say so in place, no blocking alert
     src.src=r.result;
   };
   r.readAsDataURL(file);photoEl.value="";
@@ -704,21 +706,37 @@ function jpegToPdf(img,iw,ih,pw,ph){
   const x=len;put("xref\n0 6\n0000000000 65535 f \n"+offs.slice(1).map(o=>String(o).padStart(10,"0")+" 00000 n \n").join("")+`trailer\n<</Size 6/Root 1 0 R>>\nstartxref\n${x}\n%%EOF`);
   return new Blob(parts,{type:"application/pdf"});
 }
+/* toDataURL answers with the 7-character string "data:," when the browser refuses to encode the
+   canvas - a 2400x3200 export on a low-memory phone. That would silently become a 0-byte file, so
+   treat it as the failure it is. */
+function encode(c,type,q){
+  const u=c.toDataURL(type,q);
+  if(u.length<64||u.slice(0,5)!=="data:")throw new Error("canvas export refused");
+  return u;
+}
 function buildFile(kind){
   const c=exportCanvas();
-  if(kind==="png")return dataUrlToBlob(c.toDataURL("image/png"));
-  if(kind==="jpg")return dataUrlToBlob(c.toDataURL("image/jpeg",.95));
-  return jpegToPdf(dataUrlToBytes(c.toDataURL("image/jpeg",.95)),c.width,c.height,PW,PH);
+  if(kind==="png")return dataUrlToBlob(encode(c,"image/png"));
+  if(kind==="jpg")return dataUrlToBlob(encode(c,"image/jpeg",.95));
+  return jpegToPdf(dataUrlToBytes(encode(c,"image/jpeg",.95)),c.width,c.height,PW,PH);
 }
 document.querySelectorAll("[data-dl]").forEach(btn=>btn.addEventListener("click",async()=>{
   const kind=btn.dataset.dl,label=btn.textContent,ext=kind==="jpg"?"jpg":kind;
   btn.disabled=true;btn.textContent="তৈরি হচ্ছে…";
+  let failed=false;
   try{
-    // fonts are normally loaded at startup, so this stays inside the tap; only wait if they aren't
-    if(!FONTS_READY())await Promise.all(["500","600","700","800"].map(w=>document.fonts.load(`${w} 40px ${FONT}`,"বাংলাদেশ ০১২৩")));
+    // fonts are normally loaded at startup, so this stays inside the tap; only wait if they aren't.
+    // A font that can't be fetched must never block the download (a 404 here used to reject the whole
+    // handler, so PNG/JPG/PDF silently produced nothing), and the wait is capped so the tap's user
+    // activation - which iOS and in-app browsers need - can't expire while the font loads.
+    if(!FONTS_READY())await Promise.race([
+      Promise.all(["500","600","700","800"].map(w=>document.fonts.load(`${w} 40px ${FONT}`,"বাংলাদেশ ০১২৩").catch(()=>{}))),
+      new Promise(r=>setTimeout(r,1500))
+    ]);
     saveBlob(buildFile(kind),fileBase()+"."+ext);
     sendRank();
-  }finally{setTimeout(()=>{btn.disabled=false;btn.textContent=label},400)}
+  }catch(err){failed=true;console.error("download failed",err);btn.textContent="ম্যাপ তৈরি হয়নি"}
+  finally{setTimeout(()=>{btn.disabled=false;btn.textContent=label},failed?3000:400)}
 }));
 
 // a stable per-device id, so the server can tell this browser apart without any cookie
@@ -828,7 +846,7 @@ if(inApp)document.documentElement.classList.add("in-app");
 
 /* ---------- boot ---------- */
 render();
-document.fonts.ready.then(()=>Promise.all(["500","600","700","800"].map(w=>document.fonts.load(`${w} 40px ${FONT}`,"বাংলাদেশ ০১২৩")))).then(render);
+document.fonts.ready.then(()=>Promise.all(["500","600","700","800"].map(w=>document.fonts.load(`${w} 40px ${FONT}`,"বাংলাদেশ ০১২৩").catch(()=>{})))).then(render).catch(()=>{});
 if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
 </script>
 <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"abd3853f56ce4115afe9554ae1697c2f","r":1,"spa":2}' crossorigin="anonymous"></script>
