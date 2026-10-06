@@ -1,0 +1,21 @@
+Background video
+================
+
+Source:  BANGLADESH: Hidden Worlds Shaped by Water and Time | 4K Travel Documentary
+Channel: World Travel Doc PT
+URL:     https://youtu.be/Jl-87YtFzxQ
+Upload:  2025-12-09
+
+A 30-second excerpt (00:05:00-00:05:30) is used as the looping hero
+background. No licence was declared by the uploader, so it is used here
+with credit only. If you own this clip or represent the channel, replace it
+with your own footage before publishing.
+
+Encoded locally with ffmpeg (H.264, no audio) to hero-720.mp4 and
+hero-1080.mp4; hero-poster.jpg is the first frame.
+
+Map district outlines and photographs
+====================================
+Wikimedia Commons — the author and licence of every individual image are
+listed alongside it. District outlines are derived from public-domain
+geodata.
