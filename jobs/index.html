@@ -1,1 +1,588 @@
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>গণিত প্রশ্ন ব্যাংক (১৫০০ MCQ) - ১ম ২০০ পৃষ্ঠা | প্রস্তুতি ও পরীক্ষা</title>
+  
+  <!-- Google Fonts: Hind Siliguri (Bengali) & Inter (English) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div id="app" class="app-layout">
+    
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="nav-container">
+        <div class="nav-brand" onclick="navigateTo('dashboard')">
+          <div class="brand-icon">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div class="brand-text">
+            <h1>গণিত প্রশ্ন ব্যাংক</h1>
+            <span>১৫০০ MCQ • ১ম হতে ৩০০ পৃষ্ঠা (সম্পূর্ণ বই)</span>
+          </div>
+        </div>
+
+        <!-- Global Search Bar in Nav -->
+        <div class="nav-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="globalSearchInput" placeholder="প্রশ্ন বা কিওয়ার্ড দিয়ে খুঁজুন..." oninput="handleSearch(this.value)">
+          <button id="clearSearchBtn" class="clear-btn" onclick="clearSearch()" style="display: none;">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Nav Actions -->
+        <div class="nav-actions">
+          <nav class="nav-links">
+            <button class="nav-btn active" data-view="dashboard" onclick="navigateTo('dashboard')">
+              <i class="fa-solid fa-house"></i>
+              <span>ড্যাশবোর্ড</span>
+            </button>
+            <button class="nav-btn" data-view="practice" onclick="navigateTo('practice')">
+              <i class="fa-solid fa-book-open"></i>
+              <span>অনুশীলন</span>
+            </button>
+            <button class="nav-btn" data-view="exam" onclick="navigateTo('exam')">
+              <i class="fa-solid fa-file-signature"></i>
+              <span>মডেল টেস্ট</span>
+            </button>
+            <button class="nav-btn" data-view="bookmarks" onclick="navigateTo('bookmarks')">
+              <i class="fa-solid fa-bookmark"></i>
+              <span>বুকমার্ক</span>
+              <span class="badge" id="bookmarkCountBadge">০</span>
+            </button>
+          </nav>
+
+          <!-- Theme Toggle Button -->
+          <button id="themeToggleBtn" class="icon-btn" title="ডার্ক/লাইট মোড পরিবর্তন করুন" onclick="toggleTheme()">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="main-content">
+
+      <!-- ================= VIEW 1: DASHBOARD ================= -->
+      <section id="dashboardView" class="view-panel active">
+        <!-- Hero Section -->
+        <div class="hero-card">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <i class="fa-solid fa-check-double"></i> পিডিএফ ১ম হতে ৩০০ পৃষ্ঠা (সম্পূর্ণ বই) অন্তর্ভুক্ত
+            </div>
+            <h2>বিসিএস, ব্যাংক ও চাকুরির নিয়োগ গণিত প্রস্তুতি</h2>
+            <p>পিডিএফ বইটির ধারাবাহিক সিরিয়াল অনুযায়ী ১৯টি অধ্যায়ে মোট ১,২৪১টি বাছাইকৃত MCQ প্রশ্ন, বিস্তারিত অপশন, নির্ভুল উত্তর ও রিয়েল-টাইম মডেল টেস্ট ব্যবস্থা।</p>
+            
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="startPracticeFirstTopic()">
+                <i class="fa-solid fa-play"></i> প্রথম থেকে অনুশীলন শুরু করুন
+              </button>
+              <button class="btn btn-secondary" onclick="openExamSetupModal()">
+                <i class="fa-solid fa-stopwatch"></i> পূর্ণাঙ্গ মডেল টেস্ট দিন
+              </button>
+            </div>
+          </div>
+          
+          <div class="hero-stats-panel">
+            <div class="stat-mini-card">
+              <div class="stat-icon bg-primary-soft">
+                <i class="fa-solid fa-list-check"></i>
+              </div>
+              <div class="stat-data">
+                <div class="stat-val" id="totalQuestionsCount">১,২৪১</div>
+                <div class="stat-lbl">মোট MCQ প্রশ্ন</div>
+              </div>
+            </div>
+
+            <div class="stat-mini-card">
+              <div class="stat-icon bg-success-soft">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+              <div class="stat-data">
+                <div class="stat-val" id="totalTopicsCount">১৯</div>
+                <div class="stat-lbl">টপিক / অধ্যায়</div>
+              </div>
+            </div>
+
+            <div class="stat-mini-card">
+              <div class="stat-icon bg-warning-soft">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div class="stat-data">
+                <div class="stat-val" id="solvedQuestionsCount">০</div>
+                <div class="stat-lbl">অনুশীলিত প্রশ্ন</div>
+              </div>
+            </div>
+
+            <div class="stat-mini-card">
+              <div class="stat-icon bg-info-soft">
+                <i class="fa-solid fa-bullseye"></i>
+              </div>
+              <div class="stat-data">
+                <div class="stat-val" id="overallAccuracyRate">০%</div>
+                <div class="stat-lbl">নির্ভুলতার হার</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Topics Section Header -->
+        <div class="section-heading">
+          <div class="heading-left">
+            <h3><i class="fa-solid fa-book-bookmark"></i> অধ্যায়ভিত্তিক প্রশ্ন ও পরীক্ষা</h3>
+            <p>যেকোনো টপিক নির্বাচন করে ধারাবাহিক অনুশীলন করুন অথবা ঐ টপিকের উপর মডেল টেস্ট দিন</p>
+          </div>
+          <div class="heading-right">
+            <span class="topic-counter-badge" id="topicProgressSummary">০/১২ অধ্যায় সম্পন্ন</span>
+          </div>
+        </div>
+
+        <!-- Topics Grid -->
+        <div class="topics-grid" id="topicsGrid">
+          <!-- Dynamically populated via app.js -->
+        </div>
+      </section>
+
+      <!-- ================= VIEW 2: PRACTICE MODE ================= -->
+      <section id="practiceView" class="view-panel">
+        <div class="practice-container">
+          
+          <!-- Practice Sidebar / Topbar -->
+          <div class="practice-header-bar">
+            <div class="practice-topic-selector">
+              <label for="practiceTopicSelect"><i class="fa-solid fa-folder-open"></i> অধ্যায়:</label>
+              <select id="practiceTopicSelect" onchange="changePracticeTopic(this.value)">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+
+            <div class="practice-filter-pills">
+              <button class="pill-btn active" data-filter="all" onclick="setPracticeFilter('all')">সব (<span id="countFilterAll">০</span>)</button>
+              <button class="pill-btn" data-filter="unanswered" onclick="setPracticeFilter('unanswered')">উত্তর বাকি (<span id="countFilterUnanswered">০</span>)</button>
+              <button class="pill-btn" data-filter="incorrect" onclick="setPracticeFilter('incorrect')">ভুল উত্তর (<span id="countFilterIncorrect">০</span>)</button>
+              <button class="pill-btn" data-filter="bookmarked" onclick="setPracticeFilter('bookmarked')">বুকমার্ক (<span id="countFilterBookmarked">০</span>)</button>
+            </div>
+
+            <div class="practice-quick-actions">
+              <button class="btn btn-outline btn-sm" onclick="resetTopicProgress()" title="এই অধ্যায়ের উত্তর রিসেট করুন">
+                <i class="fa-solid fa-rotate-right"></i> রিসেট
+              </button>
+              <button class="btn btn-accent btn-sm" onclick="startExamForCurrentTopic()">
+                <i class="fa-solid fa-file-pen"></i> এই অধ্যায়ে পরীক্ষা দিন
+              </button>
+            </div>
+          </div>
+
+          <!-- Practice Main Content (Question Card + Question Palette) -->
+          <div class="practice-layout">
+            
+            <!-- Left/Center: Question Card -->
+            <div class="question-display-area">
+              <div class="question-card" id="questionCard">
+                
+                <div class="q-header">
+                  <div class="q-meta">
+                    <span class="q-badge" id="qTopicBadge">সুদকষা</span>
+                    <span class="q-serial" id="qSerialInfo">প্রশ্ন ১ / ২৭ (বইয়ের সিরিয়াল #১)</span>
+                  </div>
+                  
+                  <div class="q-actions">
+                    <button id="bookmarkCurrentBtn" class="icon-toggle-btn" title="বুকমার্কে যোগ করুন" onclick="toggleCurrentBookmark()">
+                      <i class="fa-regular fa-star"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="q-body">
+                  <div class="q-text" id="qText">
+                    <!-- Question text rendered here -->
+                  </div>
+                  
+                  <!-- Options List -->
+                  <div class="q-options" id="qOptionsList">
+                    <!-- Options populated here -->
+                  </div>
+                </div>
+
+                <!-- Instant Feedback Banner -->
+                <div class="q-feedback" id="qFeedbackBanner" style="display: none;">
+                  <!-- Success / Failure alert with answer note -->
+                </div>
+
+                <div class="q-footer">
+                  <div class="nav-step-btns">
+                    <button class="btn btn-outline" id="prevQBtn" onclick="navigateQuestion(-1)">
+                      <i class="fa-solid fa-chevron-left"></i> পূর্ববর্তী
+                    </button>
+                    <button class="btn btn-outline" id="randomQBtn" onclick="jumpToRandomQuestion()" title="এলোমেলো প্রশ্ন">
+                      <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                    <button class="btn btn-primary" id="nextQBtn" onclick="navigateQuestion(1)">
+                      পরবর্তী <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                  </div>
+
+                  <div class="keyboard-tip">
+                    <span><kbd>←</kbd> <kbd>→</kbd> প্রশ্ন পরিবর্তন • <kbd>১</kbd>-<kbd>৪</kbd> উত্তর নির্বাচন</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Right Sidebar: Question Grid Palette -->
+            <aside class="practice-sidebar">
+              <div class="sidebar-box">
+                <div class="sidebar-box-header">
+                  <h4><i class="fa-solid fa-table-cells"></i> প্রশ্ন নেভিগেটর</h4>
+                  <span id="paletteProgressText">০/০ সম্পন্ন</span>
+                </div>
+                
+                <div class="palette-legend">
+                  <span class="legend-item"><span class="dot dot-unvisited"></span> অনুত্তরিত</span>
+                  <span class="legend-item"><span class="dot dot-correct"></span> সঠিক</span>
+                  <span class="legend-item"><span class="dot dot-wrong"></span> ভুল</span>
+                  <span class="legend-item"><span class="dot dot-marked"></span> বুকমার্ক</span>
+                </div>
+
+                <div class="question-palette-grid" id="questionPaletteGrid">
+                  <!-- Dynamically rendered numbered buttons -->
+                </div>
+              </div>
+            </aside>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= VIEW 3: EXAM / MODEL TEST MODE ================= -->
+      <section id="examView" class="view-panel">
+        
+        <!-- State A: Exam Setup Screen -->
+        <div id="examSetupScreen" class="exam-setup-container">
+          <div class="setup-card">
+            <div class="setup-header">
+              <div class="setup-icon">
+                <i class="fa-solid fa-stopwatch-20"></i>
+              </div>
+              <h2>অনলাইন গণিত মডেল টেস্ট</h2>
+              <p>আপনার সুবিধামত টপিক, প্রশ্নের সংখ্যা ও সময় নির্ধারণ করে বাস্তব পরীক্ষার মত প্রস্তুতি যাচাই করুন।</p>
+            </div>
+
+            <form id="examSetupForm" onsubmit="handleStartExam(event)">
+              <div class="form-group">
+                <label for="examTopicSelect"><i class="fa-solid fa-layer-group"></i> পরীক্ষার অধ্যায় / বিষয়:</label>
+                <select id="examTopicSelect" class="form-control">
+                  <option value="all">🌟 সকল অধ্যায় সম্মিলিত (পূর্ণাঙ্গ মডেল টেস্ট - ১,২৪১ প্রশ্ন থেকে)</option>
+                  <!-- Dynamically populated with topics -->
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="examQuestionCount"><i class="fa-solid fa-list-ol"></i> প্রশ্নের সংখ্যা:</label>
+                  <select id="examQuestionCount" class="form-control" onchange="updateRecommendedTime()">
+                    <option value="10">১০ টি প্রশ্ন</option>
+                    <option value="20" selected>২০ টি প্রশ্ন (স্ট্যান্ডার্ড)</option>
+                    <option value="25">২৫ টি প্রশ্ন (বিসিএস/ব্যাংক প্যাটার্ন)</option>
+                    <option value="50">৫০ টি প্রশ্ন</option>
+                    <option value="100">১০০ টি প্রশ্ন (মহা মডেল টেস্ট)</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="examTimeDuration"><i class="fa-solid fa-hourglass-half"></i> সময় নির্ধারণ:</label>
+                  <select id="examTimeDuration" class="form-control">
+                    <option value="10">১০ মিনিট</option>
+                    <option value="15">১৫ মিনিট</option>
+                    <option value="20" selected>২০ মিনিট (প্রশ্ন প্রতি ১ মিনিট)</option>
+                    <option value="25">২৫ মিনিট</option>
+                    <option value="30">৩০ মিনিট</option>
+                    <option value="45">৪৫ মিনিট</option>
+                    <option value="60">৬০ মিনিট (১ ঘণ্টা)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fa-solid fa-scale-unbalanced"></i> নেগেটিভ মার্কিং:</label>
+                <div class="radio-options">
+                  <label class="radio-label">
+                    <input type="radio" name="negativeMarking" value="0.25" checked>
+                    <span>০.২৫ নম্বর (প্রতি ভুল উত্তরে -০.২৫)</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="negativeMarking" value="0.50">
+                    <span>০.৫০ নম্বর (প্রতি ভুল উত্তরে -০.৫০)</span>
+                  </label>
+                  <label class="radio-label">
+                    <input type="radio" name="negativeMarking" value="0">
+                    <span>নেগেটিভ মার্কিং নেই</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="setup-rules">
+                <h5><i class="fa-solid fa-circle-info"></i> পরীক্ষার নিয়মাবলী:</h5>
+                <ul>
+                  <li>পরীক্ষা চলাকালীন যেকোনো প্রশ্নে যাওয়া বা উত্তর পরিবর্তন করা যাবে।</li>
+                  <li>সন্দেহজনক প্রশ্নের জন্য "রিভিউয়ের জন্য রাখুন" অপশন ব্যবহার করতে পারেন।</li>
+                  <li>সময় শেষ হলে পরীক্ষা স্বয়ংক্রিয়ভাবে সাবমিট হয়ে বিস্তারিত ফলাফল ও সমাধান প্রদর্শিত হবে।</li>
+                </ul>
+              </div>
+
+              <div class="setup-actions">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">
+                  <i class="fa-solid fa-rocket"></i> পরীক্ষা শুরু করুন
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- State B: Active Live Exam Screen -->
+        <div id="examActiveScreen" class="exam-active-container" style="display: none;">
+          
+          <!-- Sticky Exam Status Header -->
+          <div class="exam-live-header">
+            <div class="exam-header-info">
+              <span class="exam-topic-tag" id="liveExamTopicName">পূর্ণাঙ্গ মডেল টেস্ট</span>
+              <span class="exam-answered-counter">উত্তর দেওয়া হয়েছে: <strong id="liveAnsweredCount">০</strong>/<span id="liveTotalCount">২০</span></span>
+            </div>
+
+            <!-- Countdown Timer -->
+            <div class="exam-timer-wrapper">
+              <div class="timer-box" id="examTimerBox">
+                <i class="fa-regular fa-clock"></i>
+                <span id="examTimerDisplay">২০:০০</span>
+              </div>
+            </div>
+
+            <div class="exam-submit-wrapper">
+              <button class="btn btn-danger btn-sm" onclick="confirmSubmitExam()">
+                <i class="fa-solid fa-check"></i> পরীক্ষা জমা দিন
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Exam Layout -->
+          <div class="exam-live-layout">
+            
+            <!-- Left: Current Question Card -->
+            <div class="exam-question-area">
+              <div class="question-card" id="examQuestionCard">
+                
+                <div class="q-header">
+                  <div class="q-meta">
+                    <span class="q-badge" id="examQTopicBadge">টপিক</span>
+                    <span class="q-serial" id="examQNumber">প্রশ্ন ১ / ২০</span>
+                  </div>
+
+                  <div class="q-actions">
+                    <button id="examReviewToggleBtn" class="btn btn-outline btn-sm" onclick="toggleExamReviewStatus()">
+                      <i class="fa-regular fa-flag"></i> <span id="reviewBtnText">রিভিউয়ের জন্য রাখুন</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="q-body">
+                  <div class="q-text" id="examQText">
+                    <!-- Exam Question Text -->
+                  </div>
+
+                  <div class="q-options" id="examQOptionsList">
+                    <!-- Exam Options -->
+                  </div>
+                </div>
+
+                <div class="q-footer">
+                  <button class="btn btn-text" onclick="clearExamCurrentSelection()">
+                    <i class="fa-solid fa-eraser"></i> উত্তর মুছুন
+                  </button>
+
+                  <div class="exam-nav-btns">
+                    <button class="btn btn-outline" id="examPrevBtn" onclick="navigateExamQuestion(-1)">
+                      <i class="fa-solid fa-chevron-left"></i> আগের প্রশ্ন
+                    </button>
+                    <button class="btn btn-primary" id="examNextBtn" onclick="navigateExamQuestion(1)">
+                      পরের প্রশ্ন <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Right: Exam Question Palette -->
+            <aside class="exam-sidebar">
+              <div class="sidebar-box">
+                <div class="sidebar-box-header">
+                  <h4><i class="fa-solid fa-table-cells"></i> প্রশ্ন প্যালেট</h4>
+                </div>
+
+                <div class="palette-legend">
+                  <span class="legend-item"><span class="dot dot-unvisited"></span> অনুত্তরিত</span>
+                  <span class="legend-item"><span class="dot dot-answered"></span> উত্তরকৃত</span>
+                  <span class="legend-item"><span class="dot dot-review"></span> রিভিউ</span>
+                </div>
+
+                <div class="question-palette-grid" id="examPaletteGrid">
+                  <!-- Exam question jump buttons -->
+                </div>
+              </div>
+            </aside>
+
+          </div>
+        </div>
+
+        <!-- State C: Exam Result & Analysis Screen -->
+        <div id="examResultScreen" class="exam-result-container" style="display: none;">
+          <div class="result-card">
+            
+            <div class="result-header">
+              <div class="result-badge-icon" id="resultGradeIcon">
+                <i class="fa-solid fa-trophy"></i>
+              </div>
+              <h2 id="resultTitleText">পরীক্ষার ফলাফল</h2>
+              <p id="resultSubtitleText">আপনার মডেল টেস্টের ফলাফল এবং প্রতিটি প্রশ্নের ব্যাখ্যা নিচে দেওয়া হলো</p>
+            </div>
+
+            <!-- Scorecard Grid -->
+            <div class="scorecard-grid">
+              <div class="score-box primary">
+                <span class="score-label">প্রাপ্ত নম্বর</span>
+                <span class="score-value" id="resScoreVal">১৫.৭৫ / ২০</span>
+              </div>
+              <div class="score-box success">
+                <span class="score-label">সঠিক উত্তর</span>
+                <span class="score-value" id="resCorrectVal">১৬</span>
+              </div>
+              <div class="score-box danger">
+                <span class="score-label">ভুল উত্তর</span>
+                <span class="score-value" id="resWrongVal">১</span>
+              </div>
+              <div class="score-box warning">
+                <span class="score-label">উত্তরহীন</span>
+                <span class="score-value" id="resSkippedVal">৩</span>
+              </div>
+              <div class="score-box info">
+                <span class="score-label">নির্ভুলতা</span>
+                <span class="score-value" id="resAccuracyVal">৯৪.১%</span>
+              </div>
+              <div class="score-box neutral">
+                <span class="score-label">ব্যয়িত সময়</span>
+                <span class="score-value" id="resTimeVal">১৪ মিনিট ২২ সেকেন্ড</span>
+              </div>
+            </div>
+
+            <!-- Result Actions -->
+            <div class="result-actions-bar">
+              <button class="btn btn-primary" onclick="retakeExam()">
+                <i class="fa-solid fa-rotate-right"></i> পুনরায় পরীক্ষা দিন
+              </button>
+              <button class="btn btn-secondary" onclick="practiceExamMistakes()">
+                <i class="fa-solid fa-triangle-exclamation"></i> ভুল প্রশ্নগুলো অনুশীলন করুন
+              </button>
+              <button class="btn btn-outline" onclick="navigateTo('dashboard')">
+                <i class="fa-solid fa-house"></i> ড্যাশবোর্ডে ফিরে যান
+              </button>
+            </div>
+
+            <!-- Question Review Filter & List -->
+            <div class="result-review-section">
+              <div class="review-header">
+                <h3><i class="fa-solid fa-clipboard-check"></i> প্রশ্নভিত্তিক বিস্তারিত পর্যালোচনা</h3>
+                
+                <div class="review-filter-tabs">
+                  <button class="pill-btn active" data-resfilter="all" onclick="filterResultQuestions('all')">সব</button>
+                  <button class="pill-btn" data-resfilter="correct" onclick="filterResultQuestions('correct')">সঠিক</button>
+                  <button class="pill-btn" data-resfilter="wrong" onclick="filterResultQuestions('wrong')">ভুল</button>
+                  <button class="pill-btn" data-resfilter="skipped" onclick="filterResultQuestions('skipped')">উত্তরহীন</button>
+                </div>
+              </div>
+
+              <div class="review-questions-list" id="reviewQuestionsList">
+                <!-- Dynamically populated question-by-question review -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= VIEW 4: BOOKMARKS & SEARCH RESULTS ================= -->
+      <section id="bookmarksView" class="view-panel">
+        <div class="bookmarks-container">
+          
+          <div class="section-heading">
+            <div class="heading-left">
+              <h3 id="bookmarksViewTitle"><i class="fa-solid fa-bookmark"></i> বুকমার্ককৃত প্রশ্নসমূহ</h3>
+              <p id="bookmarksViewSubtitle">পুনরায় পড়ার জন্য আপনার সংরক্ষণ করা প্রশ্ন তালিকা</p>
+            </div>
+            <div class="heading-right">
+              <button class="btn btn-outline btn-sm" onclick="clearAllBookmarks()">
+                <i class="fa-solid fa-trash-can"></i> সব বুকমার্ক মুছুন
+              </button>
+            </div>
+          </div>
+
+          <div class="bookmarks-list" id="bookmarksList">
+            <!-- Dynamically populated -->
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-container">
+        <p><strong>গণিত প্রশ্ন ব্যাংক (১৫০০ MCQ)</strong> • ১ম থেকে ৩০০ পৃষ্ঠার সম্পূর্ণ ডিজিটাল সংস্করণ • বিসিএস, পিএসসি, ব্যাংক ও শিক্ষক নিবন্ধন প্রস্তুতি</p>
+        <p class="footer-sub">HTML5 • CSS3 • Modern Vanilla JavaScript • ১০০% অফলাইন ও ব্রাউজার ফ্রেন্ডলি</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Confirm Submit Exam Modal -->
+  <div id="submitModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon-warning">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3>পরীক্ষা সমাপ্ত করবেন?</h3>
+      </div>
+      <div class="modal-body">
+        <p>আপনি <strong id="modalAnsweredCount">০</strong> টি প্রশ্নের উত্তর দিয়েছেন।</p>
+        <p>বাকি রয়েছে <strong id="modalRemainingCount">০</strong> টি প্রশ্ন।</p>
+        <p class="text-muted">আপনি কি নিশ্চিত যে আপনি পরীক্ষা জমা দিতে চান?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeSubmitModal()">ফিরে যান</button>
+        <button class="btn btn-primary" onclick="executeSubmitExam()">হ্যাঁ, জমা দিন</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
 
