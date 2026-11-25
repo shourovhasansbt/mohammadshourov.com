@@ -32,14 +32,6 @@
           <span id="langLabel">বাংলা</span>
         </button>
 
-        <button id="engineSettingsBtn" class="btn btn-ghost" type="button" title="Engine Settings">
-          <span class="status-dot" id="engineStatusDot"></span>
-          <span id="engineBadgeText" data-i18n="localEngine">Local Engine</span>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.78 1 1.51 1H21a2 2 0 1 1 0 4h-.09c-.73 0-1.25.4-1.51 1z"/>
-          </svg>
-        </button>
-
         <button id="newPhotoBtn" class="btn btn-secondary hidden" type="button">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
@@ -243,44 +235,6 @@
         </div>
       </section>
     </main>
-
-    <!-- Engine Settings Modal (Local vs Optional Vercel Node.js Backend) -->
-    <div id="settingsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h2 id="settingsTitle" data-i18n="settingsTitle">AI Engine Settings</h2>
-          <button id="closeSettingsBtn" class="icon-btn" type="button" aria-label="Close">✕</button>
-        </div>
-        <div class="modal-body">
-          <label class="radio-card">
-            <input type="radio" name="engineType" value="local" checked />
-            <div>
-              <strong data-i18n="engineLocalTitle">Built-in Browser Engine (Free &amp; Instant)</strong>
-              <p data-i18n="engineLocalDesc">Runs 100% locally on your device via HTML5 Canvas. No API key or server required.</p>
-            </div>
-          </label>
-
-          <label class="radio-card">
-            <input type="radio" name="engineType" value="api" />
-            <div>
-              <strong data-i18n="engineApiTitle">Custom Vercel / Node.js Cloud API (Optional)</strong>
-              <p data-i18n="engineApiDesc">Connect your own Vercel Node.js endpoint for heavy deep-learning inpainting (e.g., Clipdrop / Replicate).</p>
-            </div>
-          </label>
-
-          <div id="apiConfigBox" class="api-config hidden">
-            <label for="apiEndpointInput" data-i18n="apiUrlLabel">API Endpoint URL</label>
-            <input id="apiEndpointInput" type="url" placeholder="https://your-project.vercel.app/api/remove" />
-
-            <label for="apiKeyInput" data-i18n="apiKeyLabel">Optional Auth Bearer Token</label>
-            <input id="apiKeyInput" type="password" placeholder="Optional secret token" />
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button id="saveSettingsBtn" class="btn btn-primary" type="button" data-i18n="saveSettings">Save Settings</button>
-        </div>
-      </div>
-    </div>
 
     <!-- Toast Notification -->
     <div id="toast" class="toast hidden"></div>

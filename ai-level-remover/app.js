@@ -130,9 +130,6 @@
 
     langToggleBtn: document.getElementById('langToggleBtn'),
     langLabel: document.getElementById('langLabel'),
-    engineSettingsBtn: document.getElementById('engineSettingsBtn'),
-    engineStatusDot: document.getElementById('engineStatusDot'),
-    engineBadgeText: document.getElementById('engineBadgeText'),
 
     imageCanvas: document.getElementById('imageCanvas'),
     originalCompareCanvas: document.getElementById('originalCompareCanvas'),
@@ -167,13 +164,6 @@
 
     imgDimensions: document.getElementById('imgDimensions'),
     statusText: document.getElementById('statusText'),
-
-    settingsModal: document.getElementById('settingsModal'),
-    closeSettingsBtn: document.getElementById('closeSettingsBtn'),
-    saveSettingsBtn: document.getElementById('saveSettingsBtn'),
-    apiConfigBox: document.getElementById('apiConfigBox'),
-    apiEndpointInput: document.getElementById('apiEndpointInput'),
-    apiKeyInput: document.getElementById('apiKeyInput'),
     toast: document.getElementById('toast')
   };
 
@@ -199,11 +189,9 @@
     lastPt: null,
     rectStart: null,
     maskHistory: [],
-    engine: localStorage.getItem('cp_engine') || 'local',
-    apiUrl:
-      localStorage.getItem('cp_api_url') ||
-      (window.location.hostname.endsWith('.vercel.app') ? `${window.location.origin}/api/remove` : ''),
-    apiKey: localStorage.getItem('cp_api_key') || '',
+    apiUrl: window.location.hostname.endsWith('.vercel.app')
+      ? `${window.location.origin}/api/remove`
+      : 'https://mohammadshourovcom.vercel.app/api/remove',
     fileName: 'cleaned-photo'
   };
 
@@ -230,18 +218,7 @@
       }
     });
     el.langLabel.textContent = state.lang === 'en' ? 'বাংলা' : 'English';
-    updateEngineUI();
     updateButtonsState();
-  }
-
-  function updateEngineUI() {
-    if (state.engine === 'api') {
-      el.engineStatusDot.classList.add('api');
-      el.engineBadgeText.textContent = t('apiEngine');
-    } else {
-      el.engineStatusDot.classList.remove('api');
-      el.engineBadgeText.textContent = t('localEngine');
-    }
   }
 
   function hasAnyMask() {
@@ -529,16 +506,30 @@
     el.compareDivider.style.left = `${pct}%`;
   }
 
-  // ---------- Run Removal (Local or Optional Cloud API) ----------
+  // ---------- Run Removal (Background Vercel Node.js API + Local Fallback) ----------
+  async function runLocalFallbackRemoval() {
+    const maskImg = maskCtx.getImageData(0, 0, state.imgW, state.imgH);
+    const maskAlpha = new Uint8Array(state.imgW * state.imgH);
+    for (let i = 0; i < maskAlpha.length; i++) {
+      maskAlpha[i] = maskImg.data[i * 4 + 3];
+    }
+
+    const result = await window.CleanPixelInpainter.inpaintImage(
+      state.currentImageData,
+      maskAlpha,
+      { mode: el.qualityMode.value },
+      (pct) => {
+        el.progressBar.style.width = `${pct}%`;
+      }
+    );
+
+    state.currentImageData = result;
+    imgCtx.putImageData(result, 0, 0);
+  }
+
   async function runRemoval() {
     if (!hasAnyMask()) {
       showToast(t('toastSelectMask'));
-      return;
-    }
-
-    if (state.engine === 'api' && !state.apiUrl) {
-      showToast(t('toastApiMissing'));
-      openSettings();
       return;
     }
 
@@ -547,26 +538,11 @@
     el.progressBar.style.width = '5%';
 
     try {
-      if (state.engine === 'api') {
+      try {
         await runRemoteApiRemoval();
-      } else {
-        const maskImg = maskCtx.getImageData(0, 0, state.imgW, state.imgH);
-        const maskAlpha = new Uint8Array(state.imgW * state.imgH);
-        for (let i = 0; i < maskAlpha.length; i++) {
-          maskAlpha[i] = maskImg.data[i * 4 + 3];
-        }
-
-        const result = await window.CleanPixelInpainter.inpaintImage(
-          state.currentImageData,
-          maskAlpha,
-          { mode: el.qualityMode.value },
-          (pct) => {
-            el.progressBar.style.width = `${pct}%`;
-          }
-        );
-
-        state.currentImageData = result;
-        imgCtx.putImageData(result, 0, 0);
+      } catch (apiErr) {
+        console.warn('Background Vercel API unavailable, using built-in browser engine:', apiErr);
+        await runLocalFallbackRemoval();
       }
 
       maskCtx.clearRect(0, 0, state.imgW, state.imgH);
@@ -643,7 +619,6 @@
     cmCtx.putImageData(bwData, 0, 0);
 
     const headers = { 'Content-Type': 'application/json' };
-    if (state.apiKey) headers['Authorization'] = `Bearer ${state.apiKey}`;
 
     el.progressBar.style.width = '50%';
     const response = await fetch(state.apiUrl, {
@@ -698,17 +673,6 @@
 
     imgCtx.drawImage(compCanvas, x0, y0);
     state.currentImageData = imgCtx.getImageData(0, 0, state.imgW, state.imgH);
-  }
-
-  // ---------- Settings Modal ----------
-  function openSettings() {
-    document.querySelectorAll('input[name="engineType"]').forEach((r) => {
-      r.checked = r.value === state.engine;
-    });
-    el.apiEndpointInput.value = state.apiUrl;
-    el.apiKeyInput.value = state.apiKey;
-    el.apiConfigBox.classList.toggle('hidden', state.engine !== 'api');
-    el.settingsModal.classList.remove('hidden');
   }
 
   // ---------- Event Wiring ----------
@@ -928,34 +892,10 @@
     state.isComparingDrag = false;
   });
 
-  // Language & Settings
+  // Language toggle
   el.langToggleBtn.addEventListener('click', () => {
     state.lang = state.lang === 'en' ? 'bn' : 'en';
     applyLanguage();
-  });
-
-  el.engineSettingsBtn.addEventListener('click', openSettings);
-  el.closeSettingsBtn.addEventListener('click', () => el.settingsModal.classList.add('hidden'));
-
-  document.querySelectorAll('input[name="engineType"]').forEach((r) => {
-    r.addEventListener('change', () => {
-      el.apiConfigBox.classList.toggle('hidden', r.value !== 'api');
-    });
-  });
-
-  el.saveSettingsBtn.addEventListener('click', () => {
-    const selected = document.querySelector('input[name="engineType"]:checked').value;
-    state.engine = selected;
-    state.apiUrl = el.apiEndpointInput.value.trim();
-    state.apiKey = el.apiKeyInput.value.trim();
-
-    localStorage.setItem('cp_engine', state.engine);
-    localStorage.setItem('cp_api_url', state.apiUrl);
-    localStorage.setItem('cp_api_key', state.apiKey);
-
-    updateEngineUI();
-    el.settingsModal.classList.add('hidden');
-    showToast(t('toastSettingsSaved'));
   });
 
   // Keyboard shortcuts
