@@ -200,7 +200,9 @@
     rectStart: null,
     maskHistory: [],
     engine: localStorage.getItem('cp_engine') || 'local',
-    apiUrl: localStorage.getItem('cp_api_url') || '',
+    apiUrl:
+      localStorage.getItem('cp_api_url') ||
+      (window.location.hostname.endsWith('.vercel.app') ? `${window.location.origin}/api/remove` : ''),
     apiKey: localStorage.getItem('cp_api_key') || '',
     fileName: 'cleaned-photo'
   };
@@ -582,46 +584,119 @@
   }
 
   async function runRemoteApiRemoval() {
-    el.progressBar.style.width = '25%';
+    el.progressBar.style.width = '18%';
 
-    const imgBlob = await new Promise((res) => el.imageCanvas.toBlob(res, 'image/png'));
-    const maskCanvasBW = document.createElement('canvas');
-    maskCanvasBW.width = state.imgW;
-    maskCanvasBW.height = state.imgH;
-    const bwCtx = maskCanvasBW.getContext('2d');
-    bwCtx.fillStyle = '#000';
-    bwCtx.fillRect(0, 0, state.imgW, state.imgH);
     const mData = maskCtx.getImageData(0, 0, state.imgW, state.imgH).data;
-    const outBw = bwCtx.getImageData(0, 0, state.imgW, state.imgH);
-    for (let i = 0; i < mData.length; i += 4) {
-      if (mData[i + 3] > 20) {
-        outBw.data[i] = 255;
-        outBw.data[i + 1] = 255;
-        outBw.data[i + 2] = 255;
-        outBw.data[i + 3] = 255;
+    let minX = state.imgW, minY = state.imgH, maxX = -1, maxY = -1;
+    for (let y = 0; y < state.imgH; y++) {
+      for (let x = 0; x < state.imgW; x++) {
+        if (mData[(y * state.imgW + x) * 4 + 3] > 20) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
       }
     }
-    bwCtx.putImageData(outBw, 0, 0);
-    const maskBlob = await new Promise((res) => maskCanvasBW.toBlob(res, 'image/png'));
+    if (maxX < minX) throw new Error('No masked region selected');
 
-    const form = new FormData();
-    form.append('image', imgBlob, 'image.png');
-    form.append('mask', maskBlob, 'mask.png');
+    const pad = 80;
+    const x0 = Math.max(0, minX - pad);
+    const y0 = Math.max(0, minY - pad);
+    const x1 = Math.min(state.imgW - 1, maxX + pad);
+    const y1 = Math.min(state.imgH - 1, maxY + pad);
+    const cropW = x1 - x0 + 1;
+    const cropH = y1 - y0 + 1;
 
-    const headers = {};
+    // Keep payload compact (< 520px) so it stays fast & well under Vercel 4.5MB limit
+    const scale = Math.min(1, 520 / Math.max(cropW, cropH));
+    const sw = Math.max(16, Math.round(cropW * scale));
+    const sh = Math.max(16, Math.round(cropH * scale));
+
+    const cropImgCanvas = document.createElement('canvas');
+    cropImgCanvas.width = sw;
+    cropImgCanvas.height = sh;
+    cropImgCanvas.getContext('2d').drawImage(el.imageCanvas, x0, y0, cropW, cropH, 0, 0, sw, sh);
+
+    const cropMaskCanvas = document.createElement('canvas');
+    cropMaskCanvas.width = sw;
+    cropMaskCanvas.height = sh;
+    const cmCtx = cropMaskCanvas.getContext('2d');
+    cmCtx.fillStyle = '#000000';
+    cmCtx.fillRect(0, 0, sw, sh);
+
+    // Draw scaled mask then threshold cleanly to pure white
+    const tmpMask = document.createElement('canvas');
+    tmpMask.width = sw;
+    tmpMask.height = sh;
+    tmpMask.getContext('2d').drawImage(el.maskCanvas, x0, y0, cropW, cropH, 0, 0, sw, sh);
+    const tmpData = tmpMask.getContext('2d').getImageData(0, 0, sw, sh).data;
+    const bwData = cmCtx.getImageData(0, 0, sw, sh);
+    for (let i = 0; i < tmpData.length; i += 4) {
+      if (tmpData[i + 3] > 20) {
+        bwData.data[i] = 255;
+        bwData.data[i + 1] = 255;
+        bwData.data[i + 2] = 255;
+        bwData.data[i + 3] = 255;
+      }
+    }
+    cmCtx.putImageData(bwData, 0, 0);
+
+    const headers = { 'Content-Type': 'application/json' };
     if (state.apiKey) headers['Authorization'] = `Bearer ${state.apiKey}`;
 
-    el.progressBar.style.width = '55%';
-    const response = await fetch(state.apiUrl, { method: 'POST', headers, body: form });
-    if (!response.ok) {
-      throw new Error(`API Error (${response.status})`);
-    }
-    const outBlob = await response.blob();
-    el.progressBar.style.width = '85%';
+    el.progressBar.style.width = '50%';
+    const response = await fetch(state.apiUrl, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        imageBase64: cropImgCanvas.toDataURL('image/png'),
+        maskBase64: cropMaskCanvas.toDataURL('image/png'),
+        mode: el.qualityMode.value
+      })
+    });
 
-    const bmp = await createImageBitmap(outBlob);
-    imgCtx.clearRect(0, 0, state.imgW, state.imgH);
-    imgCtx.drawImage(bmp, 0, 0, state.imgW, state.imgH);
+    if (!response.ok) {
+      let msg = `API Error (${response.status})`;
+      try {
+        const errJson = await response.json();
+        if (errJson && errJson.error) msg = errJson.error;
+      } catch (_) {}
+      throw new Error(msg);
+    }
+
+    el.progressBar.style.width = '82%';
+    const ctype = response.headers.get('content-type') || '';
+    let resultImgSrc;
+    if (ctype.includes('application/json')) {
+      const json = await response.json();
+      if (!json.imageBase64) throw new Error('Invalid API response');
+      resultImgSrc = json.imageBase64;
+    } else {
+      const blob = await response.blob();
+      resultImgSrc = URL.createObjectURL(blob);
+    }
+
+    const cleanedImg = await new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => {
+        if (resultImgSrc.startsWith('blob:')) URL.revokeObjectURL(resultImgSrc);
+        resolve(im);
+      };
+      im.onerror = () => reject(new Error('Failed to decode cleaned image'));
+      im.src = resultImgSrc;
+    });
+
+    // Composite cleaned pixels back into masked region at full original resolution
+    const compCanvas = document.createElement('canvas');
+    compCanvas.width = cropW;
+    compCanvas.height = cropH;
+    const compCtx = compCanvas.getContext('2d');
+    compCtx.drawImage(cleanedImg, 0, 0, cropW, cropH);
+    compCtx.globalCompositeOperation = 'destination-in';
+    compCtx.drawImage(el.maskCanvas, x0, y0, cropW, cropH, 0, 0, cropW, cropH);
+
+    imgCtx.drawImage(compCanvas, x0, y0);
     state.currentImageData = imgCtx.getImageData(0, 0, state.imgW, state.imgH);
   }
 
