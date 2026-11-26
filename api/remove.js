@@ -1,12 +1,11 @@
 /**
  * Vercel Node.js Serverless Endpoint: POST /api/remove
  * Supports:
- * 1) Cloud AI Inpainting via Clipdrop API if process.env.CLIPDROP_API_KEY is configured
- * 2) Built-in Node.js Multi-Scale + Exemplar Inpainting fallback using pngjs
- *
- * Accepts JSON: { imageBase64: "data:image/png;base64,...", maskBase64: "data:image/png;base64,...", mode: "smart"|"high"|"fast" }
+ * 1) Lossless Metadata Inspection & Stripping (`action: "inspect-metadata" | "strip-metadata"`)
+ * 2) Visual AI Watermark / Text Inpainting (`imageBase64` + `maskBase64`)
  */
 const { PNG } = require('pngjs');
+const FootprintEngine = require('./metadata-lib');
 
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,12 +17,16 @@ function clamp(v, min, max) {
   return v < min ? min : v > max ? max : v;
 }
 
-function decodeBase64Png(input) {
+function decodeBase64Buffer(input) {
   if (!input || typeof input !== 'string') {
-    throw new Error('Missing base64 PNG data');
+    throw new Error('Missing base64 file data');
   }
-  const clean = input.replace(/^data:image\/\w+;base64,/, '');
-  const buf = Buffer.from(clean, 'base64');
+  const clean = input.replace(/^data:[^;]+;base64,/, '');
+  return Buffer.from(clean, 'base64');
+}
+
+function decodeBase64Png(input) {
+  const buf = decodeBase64Buffer(input);
   return PNG.sync.read(buf);
 }
 
@@ -39,9 +42,6 @@ async function readJsonBody(req) {
   return JSON.parse(raw || '{}');
 }
 
-/**
- * Optional external Clipdrop API call when CLIPDROP_API_KEY env var is set in Vercel.
- */
 async function callClipdropCleanup(imagePngBuffer, maskPngBuffer, apiKey) {
   const form = new FormData();
   form.append('image_file', new Blob([imagePngBuffer], { type: 'image/png' }), 'image.png');
@@ -207,8 +207,7 @@ function inpaintNodePng(imgPng, maskPng, mode) {
 
   for (let i = 0; i < w * h; i++) {
     const p = i * 4;
-    // Mask is white (>128) or alpha-present (>20) in masked region
-    const isMasked = maskPng.data[p] > 128 || maskPng.data[p + 3] > 20 && (maskPng.data[p] + maskPng.data[p + 1] + maskPng.data[p + 2]) > 60;
+    const isMasked = maskPng.data[p] > 128 || (maskPng.data[p + 3] > 20 && maskPng.data[p] + maskPng.data[p + 1] + maskPng.data[p + 2] > 60);
     mask[i] = isMasked ? 1 : 0;
     if (!isMasked) {
       rgb[i * 3] = imgPng.data[p];
@@ -217,7 +216,6 @@ function inpaintNodePng(imgPng, maskPng, mode) {
     }
   }
 
-  // Multi-scale initialization
   const levels = [{ rgb, mask, w, h }];
   let cur = levels[0];
   while (cur.w > 24 && cur.h > 24 && levels.length < 6) {
@@ -233,7 +231,6 @@ function inpaintNodePng(imgPng, maskPng, mode) {
     }
   }
 
-  // Exemplar synthesis on smart/high modes
   if (mode !== 'fast') {
     const patchRadius = mode === 'high' ? 5 : 4;
     const maxCandidates = mode === 'high' ? 460 : 300;
@@ -397,25 +394,50 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Optional custom bearer token protection if API_SECRET is configured
-    if (process.env.API_SECRET) {
-      const auth = req.headers.authorization || '';
-      if (auth !== `Bearer ${process.env.API_SECRET}`) {
-        return res.status(401).json({ error: 'Unauthorized' });
-      }
-    }
-
     const body = await readJsonBody(req);
-    const { imageBase64, maskBase64, mode = 'smart' } = body;
+    const { action } = body;
 
-    if (!imageBase64 || !maskBase64) {
-      return res.status(400).json({ error: 'imageBase64 and maskBase64 are required' });
+    // 1. Metadata Inspection
+    if (action === 'inspect-metadata') {
+      const buf = decodeBase64Buffer(body.fileBase64);
+      const result = FootprintEngine.inspectBytes(buf);
+      return res.status(200).json({
+        ok: true,
+        engine: 'vercel-nodejs-metadata',
+        format: result.format,
+        report: result.report
+      });
     }
 
-    const imgClean = imageBase64.replace(/^data:image\/\w+;base64,/, '');
-    const maskClean = maskBase64.replace(/^data:image\/\w+;base64,/, '');
-    const imgBuf = Buffer.from(imgClean, 'base64');
-    const maskBuf = Buffer.from(maskClean, 'base64');
+    // 2. Lossless Metadata Removal
+    if (action === 'strip-metadata') {
+      const buf = decodeBase64Buffer(body.fileBase64);
+      const resStrip = FootprintEngine.stripBytes(buf);
+      const mimeMap = { JPEG: 'image/jpeg', PNG: 'image/png', WEBP: 'image/webp' };
+      const mime = mimeMap[resStrip.format.toUpperCase()] || 'application/octet-stream';
+      const cleanBuf = Buffer.from(resStrip.cleanBytes);
+
+      return res.status(200).json({
+        ok: true,
+        engine: 'vercel-nodejs-metadata',
+        format: resStrip.format,
+        losslessSupported: resStrip.losslessSupported,
+        originalBytes: buf.length,
+        cleanBytes: cleanBuf.length,
+        beforeReport: resStrip.beforeReport,
+        afterReport: resStrip.afterReport,
+        cleanBase64: `data:${mime};base64,${cleanBuf.toString('base64')}`
+      });
+    }
+
+    // 3. Visual Watermark / AI Text Inpainting
+    const { imageBase64, maskBase64, mode = 'smart' } = body;
+    if (!imageBase64 || !maskBase64) {
+      return res.status(400).json({ error: 'Invalid request payload' });
+    }
+
+    const imgBuf = decodeBase64Buffer(imageBase64);
+    const maskBuf = decodeBase64Buffer(maskBase64);
 
     let outputPngBuffer;
     let engineUsed = 'vercel-nodejs';
@@ -435,7 +457,7 @@ module.exports = async function handler(req, res) {
       imageBase64: `data:image/png;base64,${outputPngBuffer.toString('base64')}`
     });
   } catch (err) {
-    console.error('CleanPixel API error:', err);
+    console.error('API error:', err);
     return res.status(500).json({ error: err.message || 'Internal Server Error' });
   }
 };
