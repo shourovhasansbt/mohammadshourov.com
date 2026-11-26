@@ -1,0 +1,30 @@
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
+/** Rate limiting store (in-memory, resets on restart) */
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+
+export function checkRateLimit(
+  key: string,
+  maxAttempts = 5,
+  windowMs = 15 * 60 * 1000
+): { allowed: boolean; remaining: number } {
+  const now = Date.now()
+  const entry = rateLimitMap.get(key)
+
+  if (!entry || entry.resetAt < now) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs })
+    return { allowed: true, remaining: maxAttempts - 1 }
+  }
+
+  if (entry.count >= maxAttempts) {
+    return { allowed: false, remaining: 0 }
+  }
+
+  entry.count++
+  return { allowed: true, remaining: maxAttempts - entry.count }
+}
