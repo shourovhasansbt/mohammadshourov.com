@@ -325,6 +325,7 @@
 
       if (pos + 2 > bytes.length) break;
       const segLen = readU16BE(bytes, pos);
+      if (segLen < 2) break;
       const segEnd = Math.min(bytes.length, pos + segLen);
       const payloadStart = pos + 2;
       const payload = bytes.subarray(payloadStart, segEnd);
@@ -507,6 +508,7 @@
       const size = readU32LE(bytes, pos + 4);
       const paddedSize = size + (size % 2);
       const chunkEnd = Math.min(bytes.length, pos + 8 + paddedSize);
+      if (chunkEnd <= pos) break;
       const payload = bytes.subarray(pos + 8, Math.min(bytes.length, pos + 8 + size));
 
       if (fourcc === 'EXIF') {

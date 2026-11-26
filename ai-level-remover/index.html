@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CleanFootprints.ai — Remove AI Label Metadata from Images</title>
-  <meta name="description" content="Strip the C2PA JUMBF, XMP, EXIF, IPTC and other AI metadata signals from images losslessly without changing pixels." />
+  <title>Hydrochloric Clean — Remove AI Label Metadata from Photos</title>
+  <meta name="description" content="Remove AI label metadata (C2PA, XMP, EXIF, IPTC, PNG chunks) from photos cleanly without losing image quality." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -14,14 +14,14 @@
   <!-- Header / Navbar -->
   <header class="site-header">
     <div class="header-inner">
-      <a href="#remove-metadata" class="brand" data-nav="remove">
+      <a href="#remove" class="brand" data-nav="remove">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 32 32" fill="none">
             <path d="M16 2.5L5.5 6.8v8.4c0 6.8 4.4 12.6 10.5 14.3 6.1-1.7 10.5-7.5 10.5-14.3V6.8L16 2.5z" fill="#fff"/>
             <path d="M12.3 15.5c-.9 0-1.6-.9-1.6-2s.7-2 1.6-2 1.6.9 1.6 2-.7 2-1.6 2zm0 1.3c1.1 0 1.8.8 1.8 1.9 0 1.3-.8 2.8-1.8 2.8s-1.8-1.5-1.8-2.8c0-1.1.7-1.9 1.8-1.9zm7.4-1.3c-.9 0-1.6-.9-1.6-2s.7-2 1.6-2 1.6.9 1.6 2-.7 2-1.6 2zm0 1.3c1.1 0 1.8.8 1.8 1.9 0 1.3-.8 2.8-1.8 2.8s-1.8-1.5-1.8-2.8c0-1.1.7-1.9 1.8-1.9z" fill="#007365"/>
           </svg>
         </span>
-        <span class="brand-name">CleanFootprints.ai</span>
+        <span class="brand-name">Hydrochloric Clean</span>
       </a>
 
       <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle navigation">
@@ -35,49 +35,29 @@
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"/><path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z"/>
           </svg>
-          <span data-i18n="navRemove">Remove Metadata</span>
-        </button>
-
-        <button class="nav-link" data-nav="video" type="button">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path fill-rule="evenodd" d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2zm11.5 5.175 3.5 1.556V4.269l-3.5 1.556zM2 4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h7.5a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1z"/>
-          </svg>
-          <span data-i18n="navVideo">Remove Video AI Labels</span>
-        </button>
-
-        <button class="nav-link" data-nav="cleaner" type="button">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/><path d="M3 4.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-          </svg>
-          <span data-i18n="navCleaner">AI Text Cleaner</span>
-        </button>
-
-        <button class="nav-link" data-nav="edit" type="button">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-          </svg>
-          <span data-i18n="navEdit">Edit Metadata</span>
+          <span>Remove Metadata</span>
         </button>
 
         <button class="nav-link" data-nav="view" type="button">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
           </svg>
-          <span data-i18n="navView">View Metadata</span>
+          <span>View Metadata</span>
         </button>
 
-        <div class="nav-dropdown">
-          <button class="nav-link" id="otherToolsBtn" type="button" aria-expanded="false">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5z"/>
-            </svg>
-            <span data-i18n="navOther">Other Tools</span>
-          </button>
-          <div class="nav-submenu hidden" id="otherToolsMenu">
-            <button type="button" data-nav="geo">Geo Tag Photo</button>
-            <button type="button" data-nav="instagram-guide">Remove AI Content from Instagram</button>
-          </div>
-        </div>
+        <button class="nav-link" data-nav="edit" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/><path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+          </svg>
+          <span>Edit Metadata</span>
+        </button>
+
+        <button class="nav-link" data-nav="cleaner" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/><path d="M3 4.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
+          </svg>
+          <span>Visual AI Eraser</span>
+        </button>
       </nav>
     </div>
   </header>
@@ -86,124 +66,94 @@
     <!-- Hero Section -->
     <section class="home-hero">
       <h1 id="heroTitle">
-        <span data-i18n="heroPrefix">Remove</span>
-        <span class="home-hero__tag" data-i18n="heroTag">AI label metadata</span>
-        <span class="home-hero__tail" data-i18n="heroTail">from images.</span>
+        Remove <span class="home-hero__tag">AI label metadata</span><span class="home-hero__tail">from photos.</span>
       </h1>
 
       <div class="eyebrow-rule">
         <span class="rule-line"></span>
-        <span class="eyebrow-text" data-i18n="eyebrow">DELETE AI FOOTPRINTS</span>
+        <span class="eyebrow-text">HYDROCHLORIC CLEAN</span>
         <span class="rule-line"></span>
       </div>
 
-      <p class="home-hero__sub" id="heroSub" data-i18n="heroSub">
-        Strip the C2PA JUMBF, XMP and other metadata AI signals that Instagram, Facebook, LinkedIn and other platforms check.
+      <p class="home-hero__sub" id="heroSub">
+        Strip C2PA, XMP, EXIF &amp; hidden AI label metadata from photos automatically without reducing pixel quality.
       </p>
-
-      <!-- Video Promo Pill -->
-      <div class="video-promo">
-        <div class="video-promo__pill">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="#bc0d00" aria-hidden="true">
-            <path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1zm4 0v6h8V1zm8 8H4v6h8zM1 1v2h2V1zm2 3H1v2h2zM1 7v2h2V7zm2 3H1v2h2zm-2 3v2h2v-2zM15 1h-2v2h2zm-2 3v2h2V4zm2 3h-2v2h2zm-2 3v2h2v-2zm2 3h-2v2h2z"/>
-          </svg>
-          <strong class="promo-new">New.</strong>
-          <span data-i18n="promoText">Remove AI labels and metadata from your Videos.</span>
-          <button type="button" class="promo-cta" data-nav="video" data-i18n="promoCta">Clean video &rarr;</button>
-        </div>
-      </div>
     </section>
 
-    <!-- Primary Tool Section (Remove / View / Edit / Geo) -->
+    <!-- Primary Photo Cleaner Tool -->
     <section class="home-tool" id="metadataToolSection">
       <div class="upload-card" id="uploadCard">
-        <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload images">
-          <input id="fileInput" type="file" accept="image/*,.heic,.heif,.tiff,.tif" multiple hidden />
+        <div class="upload-zone" id="uploadZone" tabindex="0" role="button" aria-label="Upload photos">
+          <input id="fileInput" type="file" accept="image/*" multiple hidden />
           <svg class="upload-cloud-icon" width="40" height="40" viewBox="0 0 16 16" fill="#007365" aria-hidden="true">
             <path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
             <path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708z"/>
           </svg>
-          <h2 class="upload-title" data-i18n="uploadTitle">Drag &amp; Drop or Click to Upload</h2>
-          <p class="upload-limit">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="#007365" aria-hidden="true">
-              <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
-            </svg>
-            <span data-i18n="uploadLimit">Up to 5 images. Max. Upload Size: 100 MB</span>
-          </p>
+          <h2 class="upload-title">Drag &amp; Drop Photo Here to Clean</h2>
+          <p class="upload-limit">Up to 5 photos · Auto-cleans AI metadata on drop</p>
           <button id="uploadButton" class="upload-button" type="button">
             <svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
               <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708z"/>
             </svg>
-            <span data-i18n="chooseImage">Choose Image</span>
+            <span>Choose Photo</span>
           </button>
         </div>
       </div>
 
       <div class="upload-meta-row">
-        <button id="samplePhotoBtn" class="sample-link" type="button" data-i18n="trySample">Test with sample AI image</button>
-        <span class="format-note">
-          <svg width="14" height="14" viewBox="0 0 16 16" fill="#007365" aria-hidden="true">
-            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
-          </svg>
-          JPEG, PNG, WebP, TIFF, HEIC Only
-        </span>
+        <button id="samplePhotoBtn" class="sample-link" type="button">Try sample AI photo</button>
+        <span class="format-note">JPEG, PNG, WebP Supported</span>
       </div>
 
-      <!-- Uploaded Batch Queue -->
+      <!-- Uploaded Photos Queue -->
       <div id="batchList" class="batch-list hidden"></div>
 
-      <!-- Edit Metadata Form (shown only in Edit Metadata or Geo Tag tab) -->
+      <!-- Edit Metadata Form (Only visible in Edit Metadata tab) -->
       <div id="editMetadataPanel" class="edit-panel hidden">
-        <h3 id="editPanelTitle">Edit Clean Metadata Tags (PNG)</h3>
-        <div class="edit-grid" id="editFieldsContainer">
+        <h3>Write Clean Photo Metadata (Optional)</h3>
+        <div class="edit-grid">
           <label><span>Title</span><input id="editTitle" type="text" placeholder="Photo title" /></label>
           <label><span>Author / Creator</span><input id="editAuthor" type="text" placeholder="Photographer name" /></label>
           <label><span>Copyright</span><input id="editCopyright" type="text" placeholder="© 2026 All rights reserved" /></label>
-          <label><span>Software</span><input id="editSoftware" type="text" placeholder="Camera / Editor" /></label>
-          <label class="full-span"><span>Description</span><input id="editDesc" type="text" placeholder="Photo caption or description" /></label>
-        </div>
-        <div class="edit-grid hidden" id="geoFieldsContainer">
-          <label><span>GPS Latitude</span><input id="geoLat" type="text" placeholder="e.g. 23.8103" /></label>
-          <label><span>GPS Longitude</span><input id="geoLng" type="text" placeholder="e.g. 90.4125" /></label>
-          <label class="full-span"><span>Location Name</span><input id="geoPlace" type="text" placeholder="e.g. Dhaka, Bangladesh" /></label>
+          <label><span>Camera / Software</span><input id="editSoftware" type="text" placeholder="Camera / Editor" /></label>
         </div>
       </div>
 
-      <!-- Primary Red Action Button -->
+      <!-- Clean & Download Buttons (Always clear & accessible) -->
       <div class="action-button-section" id="primaryActionSection">
         <button id="removeMetadataBtn" class="action-button primary-action" type="button" disabled>
           <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
           </svg>
-          <span id="primaryActionLabel" data-i18n="removeBtn">Remove All Metadata</span>
+          <span id="primaryActionLabel">Clean Photo</span>
         </button>
 
-        <button id="downloadAllBtn" class="download-button hidden" type="button">
+        <button id="downloadAllBtn" class="download-button" type="button" disabled>
           <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
             <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
           </svg>
-          <span data-i18n="downloadClean">Download Clean Image</span>
+          <span>Download Clean Photo</span>
         </button>
       </div>
 
-      <!-- Detailed Metadata Inspection Card -->
+      <!-- Compact Metadata Inspection Card (Collapsed unless View Metadata or user clicks Inspect) -->
       <div id="metadataDisplayCard" class="metadata-card hidden">
         <div class="report-summary">
           <div>
-            <h3 id="reportFilename">Metadata Inspection</h3>
+            <h3 id="reportFilename">Metadata Details</h3>
             <p class="report-counts">
               <span class="report-summary__total" id="reportTotalTags">0 tags</span>
               <span class="report-summary__ai-count" id="reportAiTags">0 AI tags</span>
             </p>
           </div>
-          <div class="report-chips" id="reportChips"></div>
+          <button type="button" class="mini-btn" id="closeReportBtn">Hide Details</button>
         </div>
         <div id="reportAiBanner" class="report-ai hidden"></div>
         <div id="reportSections"></div>
       </div>
     </section>
 
-    <!-- Visual AI Text / Watermark Cleaner Section (Activated from "AI Text Cleaner" Nav Tab) -->
+    <!-- Visual AI Eraser (Optional Brush/Box Tool for Visible Badges) -->
     <section class="home-tool hidden" id="visualCleanerSection">
       <div class="cleaner-card">
         <div class="cleaner-toolbar">
@@ -220,13 +170,13 @@
             <button type="button" class="c-btn" id="cChooseBtn">Choose Photo</button>
             <button type="button" class="c-btn" id="cCornerBrBtn">Corner Badge</button>
             <button type="button" class="c-btn" id="cClearBtn">Clear</button>
-            <button type="button" class="action-button primary-action c-remove" id="cRemoveBtn" disabled>Remove Visual Text</button>
-            <button type="button" class="download-button hidden" id="cDownloadBtn">Download</button>
+            <button type="button" class="action-button primary-action c-remove" id="cRemoveBtn" disabled>Clean Badge</button>
+            <button type="button" class="download-button c-dl hidden" id="cDownloadBtn">Download</button>
           </div>
         </div>
         <input id="cFileInput" type="file" accept="image/*" hidden />
         <div class="cleaner-stage" id="cStage">
-          <p class="cleaner-placeholder" id="cPlaceholder">Upload a photo to brush over any visible AI text watermark or corner badge.</p>
+          <p class="cleaner-placeholder" id="cPlaceholder">Upload a photo and drag across any visible corner AI logo or text watermark to erase it.</p>
           <div class="cleaner-canvas-wrap hidden" id="cCanvasWrap">
             <canvas id="cImageCanvas"></canvas>
             <canvas id="cMaskCanvas"></canvas>
@@ -235,313 +185,127 @@
       </div>
     </section>
 
-    <!-- Video AI Label Info / Tool Section -->
-    <section class="home-tool hidden" id="videoToolSection">
-      <div class="upload-card video-card">
-        <svg class="upload-cloud-icon" width="42" height="42" viewBox="0 0 16 16" fill="#007365" aria-hidden="true">
-          <path fill-rule="evenodd" d="M0 5a2 2 0 0 1 2-2h7.5a2 2 0 0 1 1.983 1.738l3.11-1.382A1 1 0 0 1 16 4.269v7.462a1 1 0 0 1-1.406.913l-3.111-1.382A2 2 0 0 1 9.5 13H2a2 2 0 0 1-2-2zm11.5 5.175 3.5 1.556V4.269l-3.5 1.556z"/>
-        </svg>
-        <h2 class="upload-title">Inspect Video AI Metadata Boxes (MP4 / MOV)</h2>
-        <p class="upload-limit">Scans MP4/MOV moov/udta/meta atoms for C2PA, Sora, Runway, Kling, and encoder signatures right in your browser.</p>
-        <input id="videoInput" type="file" accept="video/mp4,video/quicktime,video/webm" hidden />
-        <button id="videoChooseBtn" class="upload-button" type="button">Choose Video File</button>
-        <div id="videoScanResult" class="video-scan-result hidden"></div>
-      </div>
-    </section>
-
-    <!-- Dark Teal Band: Steps to remove metadata -->
+    <!-- Teal Band: Simple 4-Step Process -->
     <section class="home-steps">
       <div class="band-inner">
         <div class="band-heading-rule">
           <span class="rule-line white"></span>
-          <h2 data-i18n="stepsHeading">Steps to remove metadata</h2>
+          <h2>How Hydrochloric Clean Works</h2>
           <span class="rule-line white"></span>
         </div>
 
-        <!-- Animated 4-Stage Demo Card -->
-        <div class="home-steps__stage">
-          <div class="home-steps__demo" id="stepsDemoCard" data-step="1">
-            <div class="demo-ai-pill" id="demoAiPill">
-              <span class="spark">✦</span>
-              <span>AI Tags Found: <strong>Midjourney | ChatGPT | etc.</strong></span>
-            </div>
-
-            <div class="demo-dropzone">
-              <div class="demo-file-box" id="demoFileBox">
-                <svg width="26" height="26" viewBox="0 0 16 16" fill="#007365">
-                  <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/><path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z"/>
-                </svg>
-                <span>photo_ai.jpg</span>
-              </div>
-              <div class="demo-scan-bar" id="demoScanBar"></div>
-              <div class="demo-status-label" id="demoStatusLabel">Upload your image</div>
-            </div>
-
-            <div class="demo-cta-row">
-              <span class="demo-strip-btn" id="demoStripBtn">Strip Metadata</span>
-              <span class="demo-dl-btn" id="demoDlBtn">✓ Download Clean</span>
-            </div>
-
-            <button class="demo-pause-btn" id="demoPauseBtn" type="button" title="Pause / Play animation" aria-label="Pause animation">
-              <span id="demoPauseIcon">❚❚</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Connected 4-Step Horizontal Stepper -->
-        <div class="home-steps__list" id="stepsList">
-          <div class="step-item active" data-step-idx="1">
+        <div class="home-steps__list">
+          <div class="step-item active">
             <div class="step-circle">
               <span class="step-num">1</span>
-              <svg width="26" height="26" viewBox="0 0 16 16" fill="#007365"><path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/><path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708z"/></svg>
+              <svg width="24" height="24" viewBox="0 0 16 16" fill="#007365"><path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/><path fill-rule="evenodd" d="M7.646 4.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V14.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708z"/></svg>
             </div>
-            <p data-i18n="step1">Upload your image</p>
+            <p>Drop or Select Photo</p>
           </div>
 
-          <div class="step-item" data-step-idx="2">
+          <div class="step-item">
             <div class="step-circle">
               <span class="step-num">2</span>
-              <svg width="26" height="26" viewBox="0 0 16 16" fill="#007365"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/></svg>
-            </div>
-            <p data-i18n="step2">View Metadata Footprints</p>
-          </div>
-
-          <div class="step-item" data-step-idx="3">
-            <div class="step-circle">
-              <span class="step-num">3</span>
               <svg width="24" height="24" viewBox="0 0 16 16" fill="#007365"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
             </div>
-            <p data-i18n="step3">Delete AI &amp; All Other Metadata</p>
+            <p>Strip AI Label Metadata</p>
           </div>
 
-          <div class="step-item" data-step-idx="4">
+          <div class="step-item">
+            <div class="step-circle">
+              <span class="step-num">3</span>
+              <svg width="24" height="24" viewBox="0 0 16 16" fill="#007365"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/></svg>
+            </div>
+            <p>Zero Quality Loss</p>
+          </div>
+
+          <div class="step-item">
             <div class="step-circle">
               <span class="step-num">4</span>
               <svg width="24" height="24" viewBox="0 0 16 16" fill="#007365"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/></svg>
             </div>
-            <p data-i18n="step4">Download clean image</p>
+            <p>Download Clean Photo</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- White Band: Features (3x3 Grid) -->
+    <!-- White Band: Concise Features (6 Cards) -->
     <section class="home-features">
       <div class="band-inner">
         <div class="band-heading-rule teal">
           <span class="rule-line teal"></span>
-          <h2>
-            <svg width="26" height="26" viewBox="0 0 16 16" fill="#007365" aria-hidden="true">
-              <path d="M8.235 1.559a.5.5 0 0 0-.47 0l-7.5 4a.5.5 0 0 0 0 .882L3.188 8 .264 9.559a.5.5 0 0 0 0 .882l7.5 4a.5.5 0 0 0 .47 0l7.5-4a.5.5 0 0 0 0-.882L12.813 8l2.922-1.559a.5.5 0 0 0 0-.882zM8 9.433 1.562 6 8 2.567 14.438 6z"/><path d="M12.813 10.5 8 13.067 3.188 10.5l-1.924 1.026L8 15.133l6.736-3.607z"/>
-            </svg>
-            <span data-i18n="featuresHeading">Features</span>
-          </h2>
+          <h2>Features</h2>
           <span class="rule-line teal"></span>
         </div>
 
         <div class="features-grid">
           <div class="feature-item">
             <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-            <h3>Remove C2PA credentials</h3>
-            <p>We strip C2PA and JUMBF credentials added by cameras, Adobe Photoshop, and generative tools. These records are one of the primary signals Instagram checks.</p>
+            <h3>Remove C2PA Credentials</h3>
+            <p>Strips C2PA and JUMBF AI signature blocks checked by Instagram, Facebook, and LinkedIn.</p>
           </div>
 
           <div class="feature-item">
             <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1.5"/></svg>
-            <h3>Delete Full EXIF, IPTC &amp; XMP Info</h3>
-            <p>We delete all EXIF, IPTC and XMP data from your image. GPS coordinates, camera serial numbers, timestamps and device details go out together with the AI markers.</p>
+            <h3>Strip EXIF, IPTC &amp; XMP</h3>
+            <p>Clears hidden software tags, camera serials, timestamps, and GPS location data.</p>
           </div>
 
           <div class="feature-item">
             <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-            <h3>Clean without changing pixels</h3>
-            <p>We strip metadata directly from file headers. We never recompress, resize, or alter image pixels, so your photo looks exactly the same.</p>
-          </div>
-
-          <div class="feature-item">
-            <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-            <h3>Help prevent false AI labels</h3>
-            <p>Even photos edited in Lightroom or Photoshop can receive an automatic "AI Info" tag from Adobe XMP headers. Stripping them helps protect real photography.</p>
+            <h3>Lossless Pixel Quality</h3>
+            <p>Only file header chunks are removed—photo pixels stay 100% original and crisp.</p>
           </div>
 
           <div class="feature-item">
             <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
-            <h3>Clean up to 5 photos at once</h3>
-            <p>Drop up to 5 images at once, inspect their tags individually, and strip all metadata across the whole batch in one click.</p>
-          </div>
-
-          <div class="feature-item">
-            <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            <h3>Inspect every tag before cleaning</h3>
-            <p>Preview every EXIF, XMP, IPTC, C2PA, and PNG text tag embedded inside your file before stripping—then verify zero tags remain afterward.</p>
-          </div>
-
-          <div class="feature-item">
-            <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m8 14 2.5-3 2 2.5L15 10l3 4"/></svg>
-            <h3>Works with common image formats</h3>
-            <p>Full lossless container stripping for JPEG, PNG, and WebP images right through our Node.js serverless engine and browser inspector.</p>
+            <h3>Instant Drag &amp; Clean</h3>
+            <p>Drop up to 5 photos and they are cleaned immediately—ready to download in one click.</p>
           </div>
 
           <div class="feature-item">
             <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-            <h3>Zero permanent storage</h3>
-            <p>Images are processed statelessly in memory and never stored on a database or disk, keeping your uploads completely private.</p>
+            <h3>Zero Storage</h3>
+            <p>Photos are never saved on any server or database. Everything stays private.</p>
           </div>
 
           <div class="feature-item">
             <svg class="feat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            <h3>Free with no account required</h3>
-            <p>No signups, no watermarks added, and no limits. Clean your photos instantly anytime from desktop or mobile.</p>
+            <h3>100% Free</h3>
+            <p>No sign-up, no limits, and no watermarks added to your cleaned photos.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Dark Teal Band: About & Learn More -->
-    <section class="home-about">
-      <div class="band-inner narrow">
-        <h2>Remove AI Metadata and AI Detection from Image</h2>
-        <p class="about-intro">
-          Modern AI generators and editing suites embed hidden digital footprints into image file headers. Platforms like Instagram, Facebook, Threads, and LinkedIn automatically read these metadata headers to attach an "AI Info" or "Made with AI" label to your posts.
-        </p>
-        <p class="about-intro">
-          CleanFootprints.ai inspects every hidden header block—including C2PA Content Credentials, Adobe XMP, IPTC DigitalSourceType, EXIF Software, and PNG prompt chunks—and strips them cleanly without touching your pixels.
-        </p>
-
-        <h3 class="about-subhead">Learn more about image metadata and AI footprints</h3>
-
-        <div class="accordion-group about-accordions">
-          <details class="acc-item dark" open>
-            <summary>What is an AI image metadata footprint?</summary>
-            <div class="acc-body">
-              <p>An AI metadata footprint consists of structured metadata chunks stored inside the header of JPEG, PNG, or WebP files. Unlike visible watermarks, these tags are invisible to the eye but instantly readable by social media platforms and metadata scanners.</p>
-              <table class="footprint-table">
-                <thead>
-                  <tr>
-                    <th>Generator</th>
-                    <th>Metadata Format Embedded</th>
-                    <th>Typical Tags</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>DALL·E 3 / ChatGPT</td><td>C2PA JUMBF + XMP</td><td>DigitalSourceType, OpenAI manifest</td></tr>
-                  <tr><td>Midjourney</td><td>PNG tEXt / XMP</td><td>Description, Prompt, Creation Time</td></tr>
-                  <tr><td>Stable Diffusion</td><td>PNG tEXt / ComfyUI JSON</td><td>parameters, Steps, Sampler, Seed</td></tr>
-                  <tr><td>Adobe Firefly</td><td>C2PA + XMP</td><td>Adobe Generative Fill, C2PA signature</td></tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-
-          <details class="acc-item dark">
-            <summary>Why AI image metadata matters</summary>
-            <div class="acc-body">
-              <p>Metadata can expose exact generation prompts, editing software (even non-AI tools like Photoshop Generative Fill or Lightroom denoise), GPS location coordinates, camera serial numbers, and original capture timestamps.</p>
-            </div>
-          </details>
-
-          <details class="acc-item dark">
-            <summary>How to identify AI metadata in images</summary>
-            <div class="acc-body">
-              <p>Upload any image above or switch to the <strong>View Metadata</strong> tab to see a complete breakdown of EXIF, XMP, IPTC, C2PA/JUMBF, and PNG text chunks with AI indicators highlighted automatically.</p>
-            </div>
-          </details>
-
-          <details class="acc-item dark">
-            <summary>How to delete AI metadata footprints</summary>
-            <div class="acc-body">
-              <p>Click <strong>Choose Image</strong>, review the detected tags, and press <strong>Remove All Metadata</strong>. Our lossless binary stripper removes the metadata segments directly from the container while leaving image pixels untouched.</p>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <!-- Light Gray Band: FAQs & Language Selector -->
+    <!-- Light Gray Band: Short FAQs -->
     <section class="home-faq">
       <div class="band-inner narrow">
         <div class="faq-card">
           <h2 class="faq-heading">FAQs</h2>
 
-          <div class="accordion-group faq-list">
+          <div class="accordion-group">
             <details class="acc-item light" open>
-              <summary>Will this remove all metadata, including AI-specific tags?</summary>
+              <summary>Does removing metadata remove the AI label?</summary>
               <div class="acc-body">
-                <p>Yes. The remover cleans EXIF, IPTC, and XMP blocks as well as common AI-identifying blocks such as C2PA/JUMBF and PNG text chunks when present. This targets metadata-only AI signatures. It does not alter pixels.</p>
+                <p>Yes. Platforms read hidden header metadata (C2PA, JUMBF, XMP, EXIF, and PNG text chunks) to detect AI labels. Stripping those metadata blocks removes those signals without altering pixels.</p>
               </div>
             </details>
 
             <details class="acc-item light">
-              <summary>Can you remove invisible or visual AI watermarks?</summary>
+              <summary>Does it reduce photo quality?</summary>
               <div class="acc-body">
-                <p>Metadata stripping removes header-based AI labels (C2PA, XMP, EXIF, PNG chunks) losslessly. For visible corner logos or text watermarks, use the <strong>AI Text Cleaner</strong> tab in the top navigation bar.</p>
+                <p>No. Metadata chunks are removed directly from JPEG, PNG, and WebP file headers without recompressing pixels.</p>
               </div>
             </details>
 
             <details class="acc-item light">
-              <summary>Do you store my images? How long are files kept?</summary>
+              <summary>What if there is a visible logo or text on the photo?</summary>
               <div class="acc-body">
-                <p>No images are saved to disk or databases. Processing happens transiently in memory and your browser downloads the cleaned file directly.</p>
+                <p>Use the <strong>Visual AI Eraser</strong> tab in the top menu to brush over any visible badge or text watermark.</p>
               </div>
             </details>
-
-            <details class="acc-item light">
-              <summary>What formats and limits are supported?</summary>
-              <div class="acc-body">
-                <p>Supports JPEG, PNG, WebP (lossless binary header stripping) as well as TIFF/HEIC inspection, up to 5 images per batch.</p>
-              </div>
-            </details>
-
-            <details class="acc-item light">
-              <summary>Will removing the metadata remove the AI label on Instagram?</summary>
-              <div class="acc-body">
-                <p>Stripping C2PA/JUMBF and XMP `DigitalSourceType` tags removes the primary metadata signals Instagram, Facebook, and LinkedIn check when assigning automatic "AI Info" labels.</p>
-              </div>
-            </details>
-
-            <details class="acc-item light">
-              <summary>Does stripping metadata reduce image quality?</summary>
-              <div class="acc-body">
-                <p>No. For JPEG, PNG, and WebP files, only metadata header blocks are removed—your image pixel data is copied byte-for-byte with zero recompression.</p>
-              </div>
-            </details>
-
-            <details class="acc-item light">
-              <summary>Can I inspect metadata before removing it?</summary>
-              <div class="acc-body">
-                <p>Yes. Every uploaded image is scanned automatically so you can view EXIF, XMP, C2PA, and PNG text tags right below the button before cleaning.</p>
-              </div>
-            </details>
-
-            <details class="acc-item light">
-              <summary>Can I add my own author or copyright metadata back?</summary>
-              <div class="acc-body">
-                <p>Yes! Switch to the <strong>Edit Metadata</strong> tab to strip AI footprints while adding clean Author, Title, Copyright, and Description fields.</p>
-              </div>
-            </details>
-
-            <details class="acc-item light">
-              <summary>Is this tool free to use?</summary>
-              <div class="acc-body">
-                <p>Yes, 100% free with no account registration required.</p>
-              </div>
-            </details>
-
-            <details class="acc-item light">
-              <summary>Does it work on mobile phones?</summary>
-              <div class="acc-body">
-                <p>Yes, the responsive interface works on both desktop and mobile browsers (iOS Safari, Android Chrome).</p>
-              </div>
-            </details>
-          </div>
-
-          <!-- Language Selector -->
-          <div class="lang-selector-row">
-            <label for="langSelect">Language:</label>
-            <select id="langSelect" class="lang-select">
-              <option value="en">🇺🇸 English</option>
-              <option value="bn">🇧🇩 বাংলা (Bengali)</option>
-            </select>
           </div>
         </div>
       </div>
@@ -552,48 +316,34 @@
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-col">
-        <h4>About</h4>
-        <p>CleanFootprints.ai helps photographers, creators, and designers inspect and strip C2PA, EXIF, XMP, and AI metadata footprints losslessly without pixel recompression.</p>
+        <h4>Hydrochloric Clean</h4>
+        <p>Fast, lossless AI label metadata remover for photos. Strip C2PA, XMP, and EXIF footprints without losing quality.</p>
       </div>
 
       <div class="footer-col">
-        <h4>Tools</h4>
+        <h4>Photo Tools</h4>
         <ul>
-          <li><button type="button" data-nav="remove">Remove Image Metadata</button></li>
-          <li><button type="button" data-nav="video">Remove Video AI Labels</button></li>
-          <li><button type="button" data-nav="cleaner">AI Text Cleaner</button></li>
-          <li><button type="button" data-nav="edit">Edit Metadata</button></li>
+          <li><button type="button" data-nav="remove">Remove Metadata</button></li>
           <li><button type="button" data-nav="view">View Metadata</button></li>
-          <li><button type="button" data-nav="geo">Geo Tag Photo</button></li>
+          <li><button type="button" data-nav="edit">Edit Metadata</button></li>
+          <li><button type="button" data-nav="cleaner">Visual AI Eraser</button></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Follow Us</h4>
-        <div class="social-pills">
-          <a href="https://mohammadshourov.com" target="_blank" rel="noopener" class="soc-pill fb">Facebook</a>
-          <a href="https://mohammadshourov.com" target="_blank" rel="noopener" class="soc-pill ig">Instagram</a>
-          <a href="https://mohammadshourov.com" target="_blank" rel="noopener" class="soc-pill x">Follow on X</a>
-        </div>
-      </div>
-
-      <div class="footer-col">
-        <h4>Quick Links</h4>
+        <h4>Links</h4>
         <ul>
           <li><a href="https://mohammadshourov.com" target="_blank" rel="noopener">mohammadshourov.com</a></li>
-          <li><a href="#remove-metadata" data-nav="remove">Metadata Stripper</a></li>
-          <li><a href="#ai-text-cleaner" data-nav="cleaner">Visual Watermark Cleaner</a></li>
         </ul>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <span>© 2025–2026 CleanFootprints.ai · mohammadshourov.com. All rights reserved.</span>
-      <span>Powered by Vercel Node.js Serverless API</span>
+      <span>© 2026 Hydrochloric Clean · mohammadshourov.com</span>
+      <span>Lossless Photo Metadata Cleaner</span>
     </div>
   </footer>
 
-  <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
   <script src="./metadata-engine.js"></script>
