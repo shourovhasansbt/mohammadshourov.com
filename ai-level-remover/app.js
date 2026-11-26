@@ -1,201 +1,163 @@
 (function () {
   'use strict';
 
-  // ---------- i18n Translations (EN / বাংলা) ----------
+  const VERCEL_API_URL = window.location.hostname.endsWith('.vercel.app')
+    ? `${window.location.origin}/api/remove`
+    : 'https://mohammadshourovcom.vercel.app/api/remove';
+
   const I18N = {
     en: {
-      subtitle: 'Photo AI Label & Object Remover',
-      localEngine: 'Local Engine',
-      apiEngine: 'Vercel Cloud API',
-      newPhoto: 'New Photo',
-      download: 'Download',
-      dropTitle: 'Drop your photo here to remove AI labels',
-      dropSub: 'Supports JPG, PNG, WebP — or press <kbd>Ctrl+V</kbd> to paste an image. 100% private in your browser.',
-      selectPhoto: 'Select Photo',
-      tryDemo: 'Try Demo Image',
-      pill1: 'Instant Browser AI',
-      pill2: 'Corner Badge Presets',
-      pill3: 'Full Original Resolution',
-      toolsTitle: 'Selection Tools',
-      toolBrush: 'Brush',
-      toolBox: 'Box',
-      toolEraser: 'Eraser',
-      brushSize: 'Brush Size',
-      presetsTitle: 'Quick Corner AI Badge',
-      presetsHelp: 'Auto-highlight common corner AI labels',
-      cornerTL: 'Top-Left',
-      cornerTR: 'Top-Right',
-      cornerBL: 'Bottom-Left',
-      cornerBR: 'Bottom-Right',
-      qualityTitle: 'Removal Mode',
-      modeSmart: 'Smart Texture + Gradient (Balanced)',
-      modeHigh: 'Deep Texture Synthesis (Best Quality)',
-      modeFast: 'Fast Smooth Fill (Solid Backgrounds)',
-      removeBtn: 'Remove AI Label',
-      undo: 'Undo',
-      clear: 'Clear',
-      reset: 'Original',
-      resolution: 'Resolution:',
-      statusLabel: 'Status:',
-      readyStatus: 'Paint over the AI label',
-      fit: 'Fit',
-      compare: 'Before / After',
-      holdOriginal: 'Hold to View Original',
-      processing: 'Removing AI label & reconstructing background...',
-      settingsTitle: 'AI Engine Settings',
-      engineLocalTitle: 'Built-in Browser Engine (Free & Instant)',
-      engineLocalDesc: 'Runs 100% locally on your device via HTML5 Canvas. No API key or server required.',
-      engineApiTitle: 'Custom Vercel / Node.js Cloud API (Optional)',
-      engineApiDesc: 'Connect your own Vercel Node.js endpoint for heavy deep-learning inpainting (e.g., Clipdrop / Replicate).',
-      apiUrlLabel: 'API Endpoint URL',
-      apiKeyLabel: 'Optional Auth Bearer Token',
-      saveSettings: 'Save Settings',
-      toastCleaned: 'AI label removed cleanly!',
-      toastSelectMask: 'First brush or select the AI label area.',
-      toastInvalidFile: 'Please select a valid image file (JPG, PNG, WebP).',
-      toastSettingsSaved: 'Engine settings saved!',
-      toastApiMissing: 'Please enter a valid API endpoint URL in Engine Settings.',
-      statusDone: 'Cleaned successfully',
-      statusMasked: 'Ready to remove'
+      navRemove: 'Remove Metadata',
+      navVideo: 'Remove Video AI Labels',
+      navCleaner: 'AI Text Cleaner',
+      navEdit: 'Edit Metadata',
+      navView: 'View Metadata',
+      navOther: 'Other Tools',
+      heroPrefix: 'Remove',
+      heroTag: 'AI label metadata',
+      heroTail: 'from images.',
+      eyebrow: 'DELETE AI FOOTPRINTS',
+      heroSub: 'Strip the C2PA JUMBF, XMP and other metadata AI signals that Instagram, Facebook, LinkedIn and other platforms check.',
+      promoText: 'Remove AI labels and metadata from your Videos.',
+      promoCta: 'Clean video →',
+      uploadTitle: 'Drag & Drop or Click to Upload',
+      uploadLimit: 'Up to 5 images. Max. Upload Size: 100 MB',
+      chooseImage: 'Choose Image',
+      trySample: 'Test with sample AI image',
+      removeBtn: 'Remove All Metadata',
+      downloadClean: 'Download Clean Image',
+      stepsHeading: 'Steps to remove metadata',
+      step1: 'Upload your image',
+      step2: 'View Metadata Footprints',
+      step3: 'Delete AI & All Other Metadata',
+      step4: 'Download clean image',
+      featuresHeading: 'Features'
     },
     bn: {
-      subtitle: 'ছবির AI লেবেল ও ওয়াটারমার্ক রিমুভার',
-      localEngine: 'লোকাল ইঞ্জিন',
-      apiEngine: 'Vercel ক্লাউড API',
-      newPhoto: 'নতুন ছবি',
-      download: 'ডাউনলোড',
-      dropTitle: 'AI লেবেল রিমুভ করতে ছবি এখানে ছাড়ুন',
-      dropSub: 'JPG, PNG, WebP সাপোর্ট করে — অথবা <kbd>Ctrl+V</kbd> চেপে ছবি পেস্ট করুন। সম্পূর্ণ ফ্রি ও প্রাইভেট।',
-      selectPhoto: 'ছবি সিলেক্ট করুন',
-      tryDemo: 'ডেমো ছবি দেখুন',
-      pill1: 'ব্রাউজারেই ইনস্ট্যান্ট AI',
-      pill2: 'কর্নার ব্যাজ প্রিসেট',
-      pill3: 'অরিজিনাল রেজোলিউশন',
-      toolsTitle: 'সিলেকশন টুলস',
-      toolBrush: 'ব্রাশ',
-      toolBox: 'বক্স',
-      toolEraser: 'ইরেজার',
-      brushSize: 'ব্রাশের সাইজ',
-      presetsTitle: 'দ্রুত কর্নার AI লেবেল',
-      presetsHelp: 'কোণার AI লেবেল এক ক্লিকে মার্ক করুন',
-      cornerTL: 'উপরে-বামে',
-      cornerTR: 'উপরে-ডানে',
-      cornerBL: 'নিচে-বামে',
-      cornerBR: 'নিচে-ডানে',
-      qualityTitle: 'রিমুভ মোড',
-      modeSmart: 'স্মার্ট টেক্সচার + গ্রেডিয়েন্ট (সেরা ব্যালেন্স)',
-      modeHigh: 'ডিপ টেক্সচার সিন্থেসিস (সর্বোচ্চ কোয়ালিটি)',
-      modeFast: 'ফাস্ট স্মুথ ফিল (এক রঙের ব্যাকগ্রাউন্ড)',
-      removeBtn: 'AI লেবেল রিমুভ করুন',
-      undo: 'আনডু',
-      clear: 'মুছুন',
-      reset: 'আসল ছবি',
-      resolution: 'রেজোলিউশন:',
-      statusLabel: 'অবস্থা:',
-      readyStatus: 'AI লেবেলের ওপর ব্রাশ করুন',
-      fit: 'ফিট',
-      compare: 'আগে / পরে',
-      holdOriginal: 'আসল ছবি দেখতে চেপে ধরুন',
-      processing: 'AI লেবেল রিমুভ করে ব্যাকগ্রাউন্ড ঠিক করা হচ্ছে...',
-      settingsTitle: 'AI ইঞ্জিন সেটিংস',
-      engineLocalTitle: 'বিল্ট-ইন ব্রাউজার ইঞ্জিন (ফ্রি ও ইনস্ট্যান্ট)',
-      engineLocalDesc: 'সরাসরি আপনার ডিভাইসে HTML5 Canvas দিয়ে চলে। কোনো সার্ভার বা API Key লাগে না।',
-      engineApiTitle: 'কাস্টম Vercel / Node.js ক্লাউড API (ঐচ্ছিক)',
-      engineApiDesc: 'চাইলে নিজের Vercel Node.js সার্ভার URL যুক্ত করে হেভি ক্লাউড AI মডেল চালাতে পারেন।',
-      apiUrlLabel: 'API এন্ডপয়েন্ট URL',
-      apiKeyLabel: 'ঐচ্ছিক অথেনটিকেশন টোকেন',
-      saveSettings: 'সেটিংস সেভ করুন',
-      toastCleaned: 'AI লেবেল সফলভাবে রিমুভ হয়েছে!',
-      toastSelectMask: 'আগে ছবির AI লেবেলের অংশটুকু ব্রাশ বা বক্স দিয়ে মার্ক করুন।',
-      toastInvalidFile: 'অনুগ্রহ করে একটি সঠিক ছবি (JPG, PNG, WebP) দিন।',
-      toastSettingsSaved: 'ইঞ্জিন সেটিংস সেভ হয়েছে!',
-      toastApiMissing: 'সেটিংসে গিয়ে একটি সঠিক Vercel API URL দিন।',
-      statusDone: 'রিমুভ সম্পন্ন হয়েছে',
-      statusMasked: 'রিমুভ করার জন্য প্রস্তুত'
+      navRemove: 'মেটাডাটা রিমুভ',
+      navVideo: 'ভিডিও AI লেবেল রিমুভ',
+      navCleaner: 'AI টেক্সট ক্লিনার',
+      navEdit: 'মেটাডাটা এডিট',
+      navView: 'মেটাডাটা দেখুন',
+      navOther: 'অন্যান্য টুলস',
+      heroPrefix: 'ছবি থেকে',
+      heroTag: 'AI লেবেল মেটাডাটা',
+      heroTail: 'মুছে ফেলুন।',
+      eyebrow: 'ডিলিট AI ফুটপ্রিন্টস',
+      heroSub: 'Instagram, Facebook, LinkedIn যেসব C2PA JUMBF, XMP এবং AI মেটাডাটা সিগন্যাল চেক করে, সেগুলো পিক্সেল নষ্ট না করেই রিমুভ করুন।',
+      promoText: 'আপনার ভিডিও থেকেও AI লেবেল এবং মেটাডাটা রিমুভ করুন।',
+      promoCta: 'ভিডিও ক্লিন করুন →',
+      uploadTitle: 'ছবি এখানে ছাড়ুন বা ক্লিক করে আপলোড করুন',
+      uploadLimit: 'একসাথে সর্বোচ্চ ৫টি ছবি। সাইজ লিমিট: ১০০ MB',
+      chooseImage: 'ছবি সিলেক্ট করুন',
+      trySample: 'স্যাম্পল AI ছবি দিয়ে টেস্ট করুন',
+      removeBtn: 'সব মেটাডাটা রিমুভ করুন',
+      downloadClean: 'ক্লিন ছবি ডাউনলোড করুন',
+      stepsHeading: 'মেটাডাটা রিমুভ করার ধাপসমূহ',
+      step1: 'ছবি আপলোড করুন',
+      step2: 'মেটাডাটা ফুটপ্রিন্ট দেখুন',
+      step3: 'AI ও সব মেটাডাটা ডিলিট করুন',
+      step4: 'ক্লিন ছবি ডাউনলোড করুন',
+      featuresHeading: 'বৈশিষ্ট্যসমূহ'
     }
   };
 
-  // ---------- DOM Elements ----------
   const el = {
-    uploadView: document.getElementById('uploadView'),
-    editorView: document.getElementById('editorView'),
-    dropZone: document.getElementById('dropZone'),
+    menuToggle: document.getElementById('menuToggle'),
+    navMenu: document.getElementById('navMenu'),
+    navLinks: document.querySelectorAll('[data-nav]'),
+    otherToolsBtn: document.getElementById('otherToolsBtn'),
+    otherToolsMenu: document.getElementById('otherToolsMenu'),
+
+    heroTitle: document.getElementById('heroTitle'),
+    heroSub: document.getElementById('heroSub'),
+
+    metadataToolSection: document.getElementById('metadataToolSection'),
+    visualCleanerSection: document.getElementById('visualCleanerSection'),
+    videoToolSection: document.getElementById('videoToolSection'),
+
+    uploadCard: document.getElementById('uploadCard'),
+    uploadZone: document.getElementById('uploadZone'),
+    uploadButton: document.getElementById('uploadButton'),
     fileInput: document.getElementById('fileInput'),
-    browseBtn: document.getElementById('browseBtn'),
-    tryDemoBtn: document.getElementById('tryDemoBtn'),
-    newPhotoBtn: document.getElementById('newPhotoBtn'),
-    downloadGroup: document.getElementById('downloadGroup'),
-    downloadBtn: document.getElementById('downloadBtn'),
-    exportFormat: document.getElementById('exportFormat'),
+    samplePhotoBtn: document.getElementById('samplePhotoBtn'),
 
-    langToggleBtn: document.getElementById('langToggleBtn'),
-    langLabel: document.getElementById('langLabel'),
+    batchList: document.getElementById('batchList'),
+    editMetadataPanel: document.getElementById('editMetadataPanel'),
+    editPanelTitle: document.getElementById('editPanelTitle'),
+    editFieldsContainer: document.getElementById('editFieldsContainer'),
+    geoFieldsContainer: document.getElementById('geoFieldsContainer'),
+    editTitle: document.getElementById('editTitle'),
+    editAuthor: document.getElementById('editAuthor'),
+    editCopyright: document.getElementById('editCopyright'),
+    editSoftware: document.getElementById('editSoftware'),
+    editDesc: document.getElementById('editDesc'),
+    geoLat: document.getElementById('geoLat'),
+    geoLng: document.getElementById('geoLng'),
+    geoPlace: document.getElementById('geoPlace'),
 
-    imageCanvas: document.getElementById('imageCanvas'),
-    originalCompareCanvas: document.getElementById('originalCompareCanvas'),
-    maskCanvas: document.getElementById('maskCanvas'),
-    canvasWrapper: document.getElementById('canvasWrapper'),
-    viewport: document.getElementById('viewport'),
-    rectPreview: document.getElementById('rectPreview'),
-    brushCursor: document.getElementById('brushCursor'),
-    processingOverlay: document.getElementById('processingOverlay'),
-    progressBar: document.getElementById('progressBar'),
+    primaryActionSection: document.getElementById('primaryActionSection'),
+    removeMetadataBtn: document.getElementById('removeMetadataBtn'),
+    primaryActionLabel: document.getElementById('primaryActionLabel'),
+    downloadAllBtn: document.getElementById('downloadAllBtn'),
 
-    toolBtns: document.querySelectorAll('.tool-btn'),
-    presetBtns: document.querySelectorAll('.preset-btn'),
-    brushSize: document.getElementById('brushSize'),
-    brushSizeVal: document.getElementById('brushSizeVal'),
-    brushSizeGroup: document.getElementById('brushSizeGroup'),
-    qualityMode: document.getElementById('qualityMode'),
+    metadataDisplayCard: document.getElementById('metadataDisplayCard'),
+    reportFilename: document.getElementById('reportFilename'),
+    reportTotalTags: document.getElementById('reportTotalTags'),
+    reportAiTags: document.getElementById('reportAiTags'),
+    reportChips: document.getElementById('reportChips'),
+    reportAiBanner: document.getElementById('reportAiBanner'),
+    reportSections: document.getElementById('reportSections'),
 
-    removeBtn: document.getElementById('removeBtn'),
-    undoMaskBtn: document.getElementById('undoMaskBtn'),
-    clearMaskBtn: document.getElementById('clearMaskBtn'),
-    resetImgBtn: document.getElementById('resetImgBtn'),
+    stepsDemoCard: document.getElementById('stepsDemoCard'),
+    demoStatusLabel: document.getElementById('demoStatusLabel'),
+    demoPauseBtn: document.getElementById('demoPauseBtn'),
+    demoPauseIcon: document.getElementById('demoPauseIcon'),
+    stepItems: document.querySelectorAll('.step-item'),
 
-    zoomOutBtn: document.getElementById('zoomOutBtn'),
-    zoomInBtn: document.getElementById('zoomInBtn'),
-    zoomFitBtn: document.getElementById('zoomFitBtn'),
-    zoomVal: document.getElementById('zoomVal'),
+    langSelect: document.getElementById('langSelect'),
+    toast: document.getElementById('toast'),
 
-    compareBtn: document.getElementById('compareBtn'),
-    holdOriginalBtn: document.getElementById('holdOriginalBtn'),
-    compareDivider: document.getElementById('compareDivider'),
+    // Visual Cleaner
+    cFileInput: document.getElementById('cFileInput'),
+    cChooseBtn: document.getElementById('cChooseBtn'),
+    cCornerBrBtn: document.getElementById('cCornerBrBtn'),
+    cClearBtn: document.getElementById('cClearBtn'),
+    cRemoveBtn: document.getElementById('cRemoveBtn'),
+    cDownloadBtn: document.getElementById('cDownloadBtn'),
+    cBrushSize: document.getElementById('cBrushSize'),
+    cPlaceholder: document.getElementById('cPlaceholder'),
+    cCanvasWrap: document.getElementById('cCanvasWrap'),
+    cImageCanvas: document.getElementById('cImageCanvas'),
+    cMaskCanvas: document.getElementById('cMaskCanvas'),
+    cTools: document.querySelectorAll('.c-tool'),
 
-    imgDimensions: document.getElementById('imgDimensions'),
-    statusText: document.getElementById('statusText'),
-    toast: document.getElementById('toast')
+    // Video Scanner
+    videoInput: document.getElementById('videoInput'),
+    videoChooseBtn: document.getElementById('videoChooseBtn'),
+    videoScanResult: document.getElementById('videoScanResult')
   };
 
-  const imgCtx = el.imageCanvas.getContext('2d', { willReadFrequently: true });
-  const origCtx = el.originalCompareCanvas.getContext('2d', { willReadFrequently: true });
-  const maskCtx = el.maskCanvas.getContext('2d', { willReadFrequently: true });
-
-  // ---------- App State ----------
   const state = {
+    mode: 'remove',
     lang: 'en',
-    tool: 'brush',
-    brushSize: 34,
-    zoom: 1,
-    imgW: 0,
-    imgH: 0,
-    originalImageData: null,
-    currentImageData: null,
-    hasCleaned: false,
-    compareActive: false,
-    compareSplit: 0.5,
-    isDrawing: false,
-    isComparingDrag: false,
-    lastPt: null,
-    rectStart: null,
-    maskHistory: [],
-    apiUrl: window.location.hostname.endsWith('.vercel.app')
-      ? `${window.location.origin}/api/remove`
-      : 'https://mohammadshourovcom.vercel.app/api/remove',
-    fileName: 'cleaned-photo'
+    files: [], // { id, name, size, bytes, url, format, report, cleanBytes, cleanUrl, afterReport, cleaned }
+    selectedId: null,
+    activeChip: 'ALL',
+    demoStep: 1,
+    demoPaused: false,
+
+    // Visual Cleaner state
+    cTool: 'brush',
+    cDrawing: false,
+    cLastPt: null,
+    cRectStart: null,
+    cImgData: null,
+    cW: 0,
+    cH: 0
   };
 
-  // ---------- Utility Functions ----------
+  // ---------- Toast & Helpers ----------
   let toastTimer = null;
   function showToast(msg) {
     el.toast.textContent = msg;
@@ -204,715 +166,683 @@
     toastTimer = setTimeout(() => el.toast.classList.add('hidden'), 2800);
   }
 
-  function t(key) {
-    return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+  function formatBytes(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   }
 
-  function applyLanguage() {
+  function bytesToBase64(bytes, mime) {
+    let bin = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return `data:${mime || 'application/octet-stream'};base64,${btoa(bin)}`;
+  }
+
+  function base64ToUint8(dataUrl) {
+    const clean = dataUrl.replace(/^data:[^;]+;base64,/, '');
+    const bin = atob(clean);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  // ---------- Language ----------
+  function applyLang() {
+    const dict = I18N[state.lang] || I18N.en;
     document.querySelectorAll('[data-i18n]').forEach((node) => {
-      const key = node.getAttribute('data-i18n');
-      if (key === 'dropSub') {
-        node.innerHTML = t(key);
+      const k = node.getAttribute('data-i18n');
+      if (dict[k]) node.textContent = dict[k];
+    });
+  }
+
+  el.langSelect.addEventListener('change', () => {
+    state.lang = el.langSelect.value;
+    applyLang();
+  });
+
+  // ---------- Navigation Modes ----------
+  function setNavMode(mode) {
+    state.mode = mode;
+    el.navMenu.classList.remove('open');
+    el.otherToolsMenu.classList.add('hidden');
+
+    document.querySelectorAll('.nav-menu .nav-link').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.nav === mode);
+    });
+
+    el.metadataToolSection.classList.add('hidden');
+    el.visualCleanerSection.classList.add('hidden');
+    el.videoToolSection.classList.add('hidden');
+    el.editMetadataPanel.classList.add('hidden');
+    el.primaryActionSection.classList.remove('hidden');
+
+    if (mode === 'cleaner') {
+      el.visualCleanerSection.classList.remove('hidden');
+      el.heroTitle.innerHTML = 'Remove <span class="home-hero__tag">visual AI text</span><span class="home-hero__tail">and watermarks.</span>';
+      el.heroSub.textContent = 'Brush over any visible corner AI badge, text watermark, or object to reconstruct the background cleanly.';
+      return;
+    }
+
+    if (mode === 'video') {
+      el.videoToolSection.classList.remove('hidden');
+      el.heroTitle.innerHTML = 'Inspect <span class="home-hero__tag">video AI labels</span><span class="home-hero__tail">and metadata.</span>';
+      el.heroSub.textContent = 'Check MP4 and MOV containers for C2PA, Sora, Runway, and AI generator metadata tags directly in your browser.';
+      return;
+    }
+
+    el.metadataToolSection.classList.remove('hidden');
+
+    if (mode === 'view') {
+      el.heroTitle.innerHTML = 'View <span class="home-hero__tag">image metadata</span><span class="home-hero__tail">footprints.</span>';
+      el.heroSub.textContent = 'Inspect every EXIF, XMP, IPTC, C2PA/JUMBF, and PNG AI prompt tag embedded inside your photo.';
+      el.primaryActionSection.classList.add('hidden');
+    } else if (mode === 'edit') {
+      el.heroTitle.innerHTML = 'Edit <span class="home-hero__tag">image metadata</span><span class="home-hero__tail">cleanly.</span>';
+      el.heroSub.textContent = 'Strip hidden AI footprints and write your own clean Title, Author, Copyright, and Description tags.';
+      el.editMetadataPanel.classList.remove('hidden');
+      el.editFieldsContainer.classList.remove('hidden');
+      el.geoFieldsContainer.classList.add('hidden');
+      el.editPanelTitle.textContent = 'Write Clean PNG Metadata Fields';
+      el.primaryActionLabel.textContent = 'Strip AI & Save Metadata';
+    } else if (mode === 'geo') {
+      el.heroTitle.innerHTML = 'Geo tag <span class="home-hero__tag">your photos</span><span class="home-hero__tail">without AI footprints.</span>';
+      el.heroSub.textContent = 'Strip AI signals while embedding custom GPS coordinates and location info into your PNG metadata.';
+      el.editMetadataPanel.classList.remove('hidden');
+      el.editFieldsContainer.classList.add('hidden');
+      el.geoFieldsContainer.classList.remove('hidden');
+      el.editPanelTitle.textContent = 'Add Clean Location / GPS Tags';
+      el.primaryActionLabel.textContent = 'Apply Clean Geo Tag';
+    } else {
+      el.heroTitle.innerHTML = `<span data-i18n="heroPrefix">${I18N[state.lang].heroPrefix}</span> <span class="home-hero__tag" data-i18n="heroTag">${I18N[state.lang].heroTag}</span><span class="home-hero__tail" data-i18n="heroTail">${I18N[state.lang].heroTail}</span>`;
+      el.heroSub.textContent = I18N[state.lang].heroSub;
+      el.primaryActionLabel.textContent = I18N[state.lang].removeBtn;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  el.navLinks.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.nav === 'instagram-guide') {
+        setNavMode('remove');
+        document.querySelector('.home-about').scrollIntoView({ behavior: 'smooth' });
       } else {
-        node.textContent = t(key);
+        setNavMode(btn.dataset.nav);
       }
     });
-    el.langLabel.textContent = state.lang === 'en' ? 'বাংলা' : 'English';
-    updateButtonsState();
-  }
+  });
 
-  function hasAnyMask() {
-    if (!state.imgW || !state.imgH) return false;
-    const m = maskCtx.getImageData(0, 0, state.imgW, state.imgH).data;
-    for (let i = 3; i < m.length; i += 16) {
-      if (m[i] > 20) return true;
-    }
-    // Fine check if coarse step missed small stroke
-    for (let i = 3; i < m.length; i += 4) {
-      if (m[i] > 20) return true;
-    }
-    return false;
-  }
+  el.menuToggle.addEventListener('click', () => el.navMenu.classList.toggle('open'));
+  el.otherToolsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    el.otherToolsMenu.classList.toggle('hidden');
+  });
+  document.addEventListener('click', () => el.otherToolsMenu.classList.add('hidden'));
 
-  function updateButtonsState() {
-    const masked = hasAnyMask();
-    el.removeBtn.disabled = !masked;
-    el.clearMaskBtn.disabled = !masked;
-    el.undoMaskBtn.disabled = state.maskHistory.length === 0;
-    el.resetImgBtn.disabled = !state.hasCleaned;
+  // ---------- Animated 4-Step Demo Card ----------
+  const DEMO_TEXTS = {
+    1: 'Upload your image',
+    2: 'Scanning C2PA, XMP & EXIF tags...',
+    3: 'Deleting AI & All Other Metadata...',
+    4: 'Clean! 0 AI Footprints Remaining'
+  };
 
-    if (state.hasCleaned) {
-      el.compareBtn.classList.remove('hidden');
-      el.holdOriginalBtn.classList.remove('hidden');
-      el.statusText.textContent = masked ? t('statusMasked') : t('statusDone');
-    } else {
-      el.compareBtn.classList.add('hidden');
-      el.holdOriginalBtn.classList.add('hidden');
-      el.statusText.textContent = masked ? t('statusMasked') : t('readyStatus');
-    }
-  }
-
-  function pushMaskHistory() {
-    if (!state.imgW) return;
-    if (state.maskHistory.length >= 20) state.maskHistory.shift();
-    state.maskHistory.push(maskCtx.getImageData(0, 0, state.imgW, state.imgH));
-  }
-
-  // ---------- Image Loading ----------
-  function loadCanvasFromSource(drawFn, name) {
-    state.fileName = name || 'cleaned-photo';
-    state.hasCleaned = false;
-    state.compareActive = false;
-    state.maskHistory = [];
-    setCompareMode(false);
-
-    drawFn();
-
-    state.originalImageData = imgCtx.getImageData(0, 0, state.imgW, state.imgH);
-    state.currentImageData = imgCtx.getImageData(0, 0, state.imgW, state.imgH);
-
-    el.originalCompareCanvas.width = state.imgW;
-    el.originalCompareCanvas.height = state.imgH;
-    origCtx.putImageData(state.originalImageData, 0, 0);
-
-    el.maskCanvas.width = state.imgW;
-    el.maskCanvas.height = state.imgH;
-    maskCtx.clearRect(0, 0, state.imgW, state.imgH);
-
-    el.imgDimensions.textContent = `${state.imgW} × ${state.imgH}`;
-
-    el.uploadView.classList.add('hidden');
-    el.editorView.classList.remove('hidden');
-    el.newPhotoBtn.classList.remove('hidden');
-    el.downloadGroup.classList.remove('hidden');
-
-    fitZoomToViewport();
-    updateButtonsState();
-  }
-
-  function handleImageFile(file) {
-    if (!file || !file.type.startsWith('image/')) {
-      showToast(t('toastInvalidFile'));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const img = new Image();
-      img.onload = () => {
-        // Keep up to 2400px max dimension for crisp yet snappy browser performance
-        const maxSide = 2400;
-        let w = img.naturalWidth;
-        let h = img.naturalHeight;
-        if (w > maxSide || h > maxSide) {
-          const ratio = maxSide / Math.max(w, h);
-          w = Math.round(w * ratio);
-          h = Math.round(h * ratio);
-        }
-        state.imgW = w;
-        state.imgH = h;
-        el.imageCanvas.width = w;
-        el.imageCanvas.height = h;
-        const baseName = file.name.replace(/\.[^.]+$/, '');
-        loadCanvasFromSource(() => {
-          imgCtx.drawImage(img, 0, 0, w, h);
-        }, baseName);
-      };
-      img.src = ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function loadDemoImage() {
-    const w = 1000;
-    const h = 660;
-    state.imgW = w;
-    state.imgH = h;
-    el.imageCanvas.width = w;
-    el.imageCanvas.height = h;
-
-    loadCanvasFromSource(() => {
-      // Sunset sky gradient
-      const sky = imgCtx.createLinearGradient(0, 0, 0, h * 0.68);
-      sky.addColorStop(0, '#1e3a8a');
-      sky.addColorStop(0.5, '#7c3aed');
-      sky.addColorStop(1, '#fb923c');
-      imgCtx.fillStyle = sky;
-      imgCtx.fillRect(0, 0, w, h);
-
-      // Sun
-      const sunGrad = imgCtx.createRadialGradient(w * 0.65, h * 0.42, 8, w * 0.65, h * 0.42, 95);
-      sunGrad.addColorStop(0, '#fef08a');
-      sunGrad.addColorStop(0.4, 'rgba(253, 186, 116, 0.7)');
-      sunGrad.addColorStop(1, 'rgba(251, 146, 60, 0)');
-      imgCtx.fillStyle = sunGrad;
-      imgCtx.beginPath();
-      imgCtx.arc(w * 0.65, h * 0.42, 95, 0, Math.PI * 2);
-      imgCtx.fill();
-
-      // Mountains
-      imgCtx.fillStyle = '#312e81';
-      imgCtx.beginPath();
-      imgCtx.moveTo(0, h * 0.66);
-      imgCtx.lineTo(180, h * 0.45);
-      imgCtx.lineTo(390, h * 0.62);
-      imgCtx.lineTo(610, h * 0.41);
-      imgCtx.lineTo(820, h * 0.58);
-      imgCtx.lineTo(w, h * 0.48);
-      imgCtx.lineTo(w, h);
-      imgCtx.lineTo(0, h);
-      imgCtx.closePath();
-      imgCtx.fill();
-
-      // Foreground lake reflection
-      const lake = imgCtx.createLinearGradient(0, h * 0.66, 0, h);
-      lake.addColorStop(0, '#1e1b4b');
-      lake.addColorStop(1, '#0f172a');
-      imgCtx.fillStyle = lake;
-      imgCtx.fillRect(0, h * 0.66, w, h * 0.34);
-
-      // Subtle grass/water texture
-      for (let i = 0; i < 400; i++) {
-        imgCtx.fillStyle = i % 2 === 0 ? 'rgba(251, 146, 60, 0.14)' : 'rgba(148, 163, 184, 0.08)';
-        const rx = Math.random() * w;
-        const ry = h * 0.67 + Math.random() * (h * 0.32);
-        imgCtx.fillRect(rx, ry, 18 + Math.random() * 44, 2);
-      }
-
-      // Synthetic "AI GENERATED" badge in bottom-right corner
-      const bx = w - 215;
-      const by = h - 64;
-      imgCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-      imgCtx.beginPath();
-      imgCtx.roundRect(bx, by, 190, 42, 10);
-      imgCtx.fill();
-      imgCtx.strokeStyle = 'rgba(255,255,255,0.45)';
-      imgCtx.lineWidth = 1.5;
-      imgCtx.stroke();
-
-      imgCtx.fillStyle = '#38bdf8';
-      imgCtx.font = 'bold 18px Inter, sans-serif';
-      imgCtx.fillText('✦ AI GENERATED', bx + 18, by + 27);
-    }, 'demo-landscape');
-  }
-
-  // ---------- Zoom & Display Scaling ----------
-  function applyZoom() {
-    if (!state.imgW) return;
-    const dispW = Math.round(state.imgW * state.zoom);
-    const dispH = Math.round(state.imgH * state.zoom);
-
-    el.canvasWrapper.style.width = `${dispW}px`;
-    el.canvasWrapper.style.height = `${dispH}px`;
-
-    [el.imageCanvas, el.originalCompareCanvas, el.maskCanvas].forEach((c) => {
-      c.style.width = `${dispW}px`;
-      c.style.height = `${dispH}px`;
+  setInterval(() => {
+    if (state.demoPaused) return;
+    state.demoStep = (state.demoStep % 4) + 1;
+    el.stepsDemoCard.setAttribute('data-step', String(state.demoStep));
+    el.demoStatusLabel.textContent = DEMO_TEXTS[state.demoStep];
+    el.stepItems.forEach((item) => {
+      item.classList.toggle('active', Number(item.dataset.stepIdx) === state.demoStep);
     });
+  }, 2200);
 
-    el.zoomVal.textContent = `${Math.round(state.zoom * 100)}%`;
-  }
+  el.demoPauseBtn.addEventListener('click', () => {
+    state.demoPaused = !state.demoPaused;
+    el.demoPauseIcon.textContent = state.demoPaused ? '▶' : '❚❚';
+  });
 
-  function fitZoomToViewport() {
-    const rect = el.viewport.getBoundingClientRect();
-    const availW = Math.max(260, rect.width - 56);
-    const availH = Math.max(240, rect.height - 56);
-    state.zoom = Math.min(1, availW / state.imgW, availH / state.imgH);
-    applyZoom();
-  }
-
-  // ---------- Canvas Coordinates & Mask Drawing ----------
-  function getCanvasCoords(clientX, clientY) {
-    const rect = el.maskCanvas.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) * state.imgW;
-    const y = ((clientY - rect.top) / rect.height) * state.imgH;
-    return { x, y };
-  }
-
-  function drawBrushStroke(p1, p2) {
-    const radius = (state.brushSize / state.zoom) * 0.5;
-    maskCtx.save();
-    maskCtx.lineCap = 'round';
-    maskCtx.lineJoin = 'round';
-    maskCtx.lineWidth = radius * 2;
-
-    if (state.tool === 'eraser') {
-      maskCtx.globalCompositeOperation = 'destination-out';
-      maskCtx.strokeStyle = 'rgba(0,0,0,1)';
-    } else {
-      maskCtx.globalCompositeOperation = 'source-over';
-      maskCtx.strokeStyle = '#f43f5e';
-    }
-
-    maskCtx.beginPath();
-    maskCtx.moveTo(p1.x, p1.y);
-    maskCtx.lineTo(p2.x, p2.y);
-    maskCtx.stroke();
-    maskCtx.restore();
-  }
-
-  function updateBrushCursor(clientX, clientY) {
-    if (state.tool === 'rect' || state.compareActive) {
-      el.brushCursor.classList.add('hidden');
-      return;
-    }
-    el.brushCursor.classList.remove('hidden');
-    el.brushCursor.style.width = `${state.brushSize}px`;
-    el.brushCursor.style.height = `${state.brushSize}px`;
-    el.brushCursor.style.left = `${clientX}px`;
-    el.brushCursor.style.top = `${clientY}px`;
-  }
-
-  // ---------- Corner Badge Preset ----------
-  function applyCornerPreset(corner) {
-    if (!state.imgW) return;
-    pushMaskHistory();
-    const boxW = Math.round(Math.min(Math.max(state.imgW * 0.22, 130), 260));
-    const boxH = Math.round(Math.min(Math.max(state.imgH * 0.11, 55), 110));
-    const pad = Math.round(Math.min(state.imgW, state.imgH) * 0.015);
-
-    let x = pad;
-    let y = pad;
-    if (corner === 'tr' || corner === 'br') x = state.imgW - boxW - pad;
-    if (corner === 'bl' || corner === 'br') y = state.imgH - boxH - pad;
-
-    maskCtx.save();
-    maskCtx.fillStyle = '#f43f5e';
-    maskCtx.fillRect(x, y, boxW, boxH);
-    maskCtx.restore();
-
-    updateButtonsState();
-  }
-
-  // ---------- Before / After Comparison ----------
-  function setCompareMode(active) {
-    state.compareActive = active;
-    if (!active) {
-      el.originalCompareCanvas.classList.add('hidden');
-      el.compareDivider.classList.add('hidden');
-      el.maskCanvas.style.pointerEvents = 'auto';
-      el.compareBtn.classList.remove('btn-primary');
-      return;
-    }
-    el.originalCompareCanvas.classList.remove('hidden');
-    el.compareDivider.classList.remove('hidden');
-    el.maskCanvas.style.pointerEvents = 'none';
-    el.compareBtn.classList.add('btn-primary');
-    updateCompareClip();
-  }
-
-  function updateCompareClip() {
-    const pct = Math.max(0, Math.min(1, state.compareSplit)) * 100;
-    el.originalCompareCanvas.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-    el.compareDivider.style.left = `${pct}%`;
-  }
-
-  // ---------- Run Removal (Background Vercel Node.js API + Local Fallback) ----------
-  async function runLocalFallbackRemoval() {
-    const maskImg = maskCtx.getImageData(0, 0, state.imgW, state.imgH);
-    const maskAlpha = new Uint8Array(state.imgW * state.imgH);
-    for (let i = 0; i < maskAlpha.length; i++) {
-      maskAlpha[i] = maskImg.data[i * 4 + 3];
-    }
-
-    const result = await window.CleanPixelInpainter.inpaintImage(
-      state.currentImageData,
-      maskAlpha,
-      { mode: el.qualityMode.value },
-      (pct) => {
-        el.progressBar.style.width = `${pct}%`;
-      }
-    );
-
-    state.currentImageData = result;
-    imgCtx.putImageData(result, 0, 0);
-  }
-
-  async function runRemoval() {
-    if (!hasAnyMask()) {
-      showToast(t('toastSelectMask'));
-      return;
-    }
-
-    setCompareMode(false);
-    el.processingOverlay.classList.remove('hidden');
-    el.progressBar.style.width = '5%';
-
-    try {
+  // ---------- File Upload & Inspection ----------
+  async function inspectViaVercelOrLocal(bytes, mime) {
+    // Always inspect locally first for instant UI feedback, and also verify with Vercel if <= 3MB
+    const localRes = window.FootprintEngine.inspectBytes(bytes);
+    if (bytes.length <= 3 * 1024 * 1024) {
       try {
-        await runRemoteApiRemoval();
-      } catch (apiErr) {
-        console.warn('Background Vercel API unavailable, using built-in browser engine:', apiErr);
-        await runLocalFallbackRemoval();
-      }
-
-      maskCtx.clearRect(0, 0, state.imgW, state.imgH);
-      state.maskHistory = [];
-      state.hasCleaned = true;
-      updateButtonsState();
-      showToast(t('toastCleaned'));
-    } catch (err) {
-      console.error(err);
-      showToast(err.message || 'Removal failed');
-    } finally {
-      el.processingOverlay.classList.add('hidden');
-      el.progressBar.style.width = '0%';
-    }
-  }
-
-  async function runRemoteApiRemoval() {
-    el.progressBar.style.width = '18%';
-
-    const mData = maskCtx.getImageData(0, 0, state.imgW, state.imgH).data;
-    let minX = state.imgW, minY = state.imgH, maxX = -1, maxY = -1;
-    for (let y = 0; y < state.imgH; y++) {
-      for (let x = 0; x < state.imgW; x++) {
-        if (mData[(y * state.imgW + x) * 4 + 3] > 20) {
-          if (x < minX) minX = x;
-          if (x > maxX) maxX = x;
-          if (y < minY) minY = y;
-          if (y > maxY) maxY = y;
+        const resp = await fetch(VERCEL_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'inspect-metadata',
+            fileBase64: bytesToBase64(bytes, mime)
+          })
+        });
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json.ok && json.report) {
+            return { format: json.format || localRes.format, report: json.report };
+          }
         }
-      }
-    }
-    if (maxX < minX) throw new Error('No masked region selected');
-
-    const pad = 80;
-    const x0 = Math.max(0, minX - pad);
-    const y0 = Math.max(0, minY - pad);
-    const x1 = Math.min(state.imgW - 1, maxX + pad);
-    const y1 = Math.min(state.imgH - 1, maxY + pad);
-    const cropW = x1 - x0 + 1;
-    const cropH = y1 - y0 + 1;
-
-    // Keep payload compact (< 520px) so it stays fast & well under Vercel 4.5MB limit
-    const scale = Math.min(1, 520 / Math.max(cropW, cropH));
-    const sw = Math.max(16, Math.round(cropW * scale));
-    const sh = Math.max(16, Math.round(cropH * scale));
-
-    const cropImgCanvas = document.createElement('canvas');
-    cropImgCanvas.width = sw;
-    cropImgCanvas.height = sh;
-    cropImgCanvas.getContext('2d').drawImage(el.imageCanvas, x0, y0, cropW, cropH, 0, 0, sw, sh);
-
-    const cropMaskCanvas = document.createElement('canvas');
-    cropMaskCanvas.width = sw;
-    cropMaskCanvas.height = sh;
-    const cmCtx = cropMaskCanvas.getContext('2d');
-    cmCtx.fillStyle = '#000000';
-    cmCtx.fillRect(0, 0, sw, sh);
-
-    // Draw scaled mask then threshold cleanly to pure white
-    const tmpMask = document.createElement('canvas');
-    tmpMask.width = sw;
-    tmpMask.height = sh;
-    tmpMask.getContext('2d').drawImage(el.maskCanvas, x0, y0, cropW, cropH, 0, 0, sw, sh);
-    const tmpData = tmpMask.getContext('2d').getImageData(0, 0, sw, sh).data;
-    const bwData = cmCtx.getImageData(0, 0, sw, sh);
-    for (let i = 0; i < tmpData.length; i += 4) {
-      if (tmpData[i + 3] > 20) {
-        bwData.data[i] = 255;
-        bwData.data[i + 1] = 255;
-        bwData.data[i + 2] = 255;
-        bwData.data[i + 3] = 255;
-      }
-    }
-    cmCtx.putImageData(bwData, 0, 0);
-
-    const headers = { 'Content-Type': 'application/json' };
-
-    el.progressBar.style.width = '50%';
-    const response = await fetch(state.apiUrl, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({
-        imageBase64: cropImgCanvas.toDataURL('image/png'),
-        maskBase64: cropMaskCanvas.toDataURL('image/png'),
-        mode: el.qualityMode.value
-      })
-    });
-
-    if (!response.ok) {
-      let msg = `API Error (${response.status})`;
-      try {
-        const errJson = await response.json();
-        if (errJson && errJson.error) msg = errJson.error;
       } catch (_) {}
-      throw new Error(msg);
     }
-
-    el.progressBar.style.width = '82%';
-    const ctype = response.headers.get('content-type') || '';
-    let resultImgSrc;
-    if (ctype.includes('application/json')) {
-      const json = await response.json();
-      if (!json.imageBase64) throw new Error('Invalid API response');
-      resultImgSrc = json.imageBase64;
-    } else {
-      const blob = await response.blob();
-      resultImgSrc = URL.createObjectURL(blob);
-    }
-
-    const cleanedImg = await new Promise((resolve, reject) => {
-      const im = new Image();
-      im.onload = () => {
-        if (resultImgSrc.startsWith('blob:')) URL.revokeObjectURL(resultImgSrc);
-        resolve(im);
-      };
-      im.onerror = () => reject(new Error('Failed to decode cleaned image'));
-      im.src = resultImgSrc;
-    });
-
-    // Composite cleaned pixels back into masked region at full original resolution
-    const compCanvas = document.createElement('canvas');
-    compCanvas.width = cropW;
-    compCanvas.height = cropH;
-    const compCtx = compCanvas.getContext('2d');
-    compCtx.drawImage(cleanedImg, 0, 0, cropW, cropH);
-    compCtx.globalCompositeOperation = 'destination-in';
-    compCtx.drawImage(el.maskCanvas, x0, y0, cropW, cropH, 0, 0, cropW, cropH);
-
-    imgCtx.drawImage(compCanvas, x0, y0);
-    state.currentImageData = imgCtx.getImageData(0, 0, state.imgW, state.imgH);
+    return localRes;
   }
 
-  // ---------- Event Wiring ----------
-  el.browseBtn.addEventListener('click', (e) => {
+  async function addFiles(fileList) {
+    const incoming = Array.from(fileList || []);
+    if (!incoming.length) return;
+
+    for (const file of incoming) {
+      if (state.files.length >= 5) {
+        showToast('Batch limit reached (maximum 5 images).');
+        break;
+      }
+      const buf = await file.arrayBuffer();
+      const bytes = new Uint8Array(buf);
+      const url = URL.createObjectURL(file);
+      const inspected = await inspectViaVercelOrLocal(bytes, file.type);
+
+      const entry = {
+        id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+        name: file.name,
+        mime: file.type || 'image/png',
+        size: bytes.length,
+        bytes,
+        url,
+        format: inspected.format,
+        report: inspected.report,
+        cleanBytes: null,
+        cleanUrl: null,
+        afterReport: null,
+        cleaned: false
+      };
+
+      state.files.push(entry);
+      state.selectedId = entry.id;
+    }
+
+    renderBatchList();
+    renderSelectedMetadata();
+  }
+
+  function renderBatchList() {
+    if (state.files.length === 0) {
+      el.batchList.classList.add('hidden');
+      el.metadataDisplayCard.classList.add('hidden');
+      el.removeMetadataBtn.disabled = true;
+      el.downloadAllBtn.classList.add('hidden');
+      return;
+    }
+
+    el.batchList.classList.remove('hidden');
+    el.removeMetadataBtn.disabled = false;
+
+    const allCleaned = state.files.every((f) => f.cleaned);
+    el.downloadAllBtn.classList.toggle('hidden', !allCleaned);
+
+    el.batchList.innerHTML = '';
+    state.files.forEach((f) => {
+      const report = f.cleaned && f.afterReport ? f.afterReport : f.report;
+      const row = document.createElement('div');
+      row.className = 'batch-row';
+
+      const pillClass = f.cleaned ? 'clean' : report.aiDetected ? 'ai' : '';
+      const pillText = f.cleaned
+        ? '✓ Cleaned · 0 AI tags'
+        : report.aiDetected
+          ? `⚠ ${report.aiTagsCount || 1} AI signal(s)`
+          : `${report.totalTags} tags`;
+
+      row.innerHTML = `
+        <div class="batch-left">
+          <img class="batch-thumb" src="${f.cleanUrl || f.url}" alt="" />
+          <div class="batch-info">
+            <div class="batch-name">${f.name}</div>
+            <div class="batch-sub">
+              <span>${f.format} · ${formatBytes(f.cleaned ? f.cleanBytes.length : f.size)}</span>
+              <span class="tag-pill ${pillClass}">${pillText}</span>
+            </div>
+          </div>
+        </div>
+        <div class="batch-actions">
+          <button type="button" class="mini-btn inspect-btn">Inspect</button>
+          ${f.cleaned ? '<button type="button" class="mini-btn dl dl-btn">Download</button>' : ''}
+          <button type="button" class="mini-btn rm-btn" title="Remove">✕</button>
+        </div>
+      `;
+
+      row.querySelector('.inspect-btn').addEventListener('click', () => {
+        state.selectedId = f.id;
+        state.activeChip = 'ALL';
+        renderSelectedMetadata();
+      });
+
+      const dlBtn = row.querySelector('.dl-btn');
+      if (dlBtn) {
+        dlBtn.addEventListener('click', () => triggerDownload(f));
+      }
+
+      row.querySelector('.rm-btn').addEventListener('click', () => {
+        URL.revokeObjectURL(f.url);
+        if (f.cleanUrl) URL.revokeObjectURL(f.cleanUrl);
+        state.files = state.files.filter((x) => x.id !== f.id);
+        if (state.selectedId === f.id) {
+          state.selectedId = state.files[0] ? state.files[0].id : null;
+        }
+        renderBatchList();
+        renderSelectedMetadata();
+      });
+
+      el.batchList.appendChild(row);
+    });
+  }
+
+  function renderSelectedMetadata() {
+    const file = state.files.find((f) => f.id === state.selectedId) || state.files[0];
+    if (!file) {
+      el.metadataDisplayCard.classList.add('hidden');
+      return;
+    }
+
+    el.metadataDisplayCard.classList.remove('hidden');
+    const report = file.cleaned && file.afterReport ? file.afterReport : file.report;
+
+    el.reportFilename.textContent = `${file.name} (${file.cleaned ? 'After Cleaning' : 'Metadata Report'})`;
+    el.reportTotalTags.textContent = `${report.totalTags} metadata tag(s)`;
+    el.reportAiTags.textContent = `${report.aiTagsCount} AI tag(s)`;
+
+    if (file.cleaned) {
+      el.reportAiBanner.classList.remove('hidden');
+      el.reportAiBanner.classList.add('safe');
+      el.reportAiBanner.innerHTML = '<strong>Clean!</strong> All EXIF, XMP, IPTC, C2PA, and PNG AI metadata chunks have been stripped losslessly without altering pixels.';
+    } else if (report.aiDetected) {
+      el.reportAiBanner.classList.remove('hidden', 'safe');
+      const gens = report.detectedGenerators.length ? report.detectedGenerators.join(', ') : 'Embedded AI Signal';
+      el.reportAiBanner.innerHTML = `<strong>AI Metadata Footprint Detected:</strong> ${gens}`;
+    } else if (report.totalTags > 0) {
+      el.reportAiBanner.classList.remove('hidden');
+      el.reportAiBanner.classList.add('safe');
+      el.reportAiBanner.innerHTML = '<strong>No obvious AI markers detected</strong>, though standard EXIF/device metadata tags were found and can be stripped.';
+    } else {
+      el.reportAiBanner.classList.remove('hidden');
+      el.reportAiBanner.classList.add('safe');
+      el.reportAiBanner.innerHTML = '<strong>Zero metadata tags found</strong> in this image header.';
+    }
+
+    // Chips
+    const sectionNames = Object.keys(report.sections || {});
+    el.reportChips.innerHTML = '';
+    const allChip = document.createElement('button');
+    allChip.type = 'button';
+    allChip.className = `report-chip ${state.activeChip === 'ALL' ? 'active' : ''}`;
+    allChip.textContent = 'All';
+    allChip.addEventListener('click', () => {
+      state.activeChip = 'ALL';
+      renderSelectedMetadata();
+    });
+    el.reportChips.appendChild(allChip);
+
+    sectionNames.forEach((sec) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = `report-chip ${state.activeChip === sec ? 'active' : ''}`;
+      b.textContent = sec;
+      b.addEventListener('click', () => {
+        state.activeChip = sec;
+        renderSelectedMetadata();
+      });
+      el.reportChips.appendChild(b);
+    });
+
+    // Sections
+    el.reportSections.innerHTML = '';
+    sectionNames
+      .filter((sec) => state.activeChip === 'ALL' || state.activeChip === sec)
+      .forEach((sec) => {
+        const det = document.createElement('details');
+        det.className = 'report-section';
+        det.open = true;
+        const rowsHtml = report.sections[sec]
+          .map(
+            (r) => `
+          <div class="report-row ${r.isAi ? 'is-ai' : ''}">
+            <div class="report-label">${escapeHtml(r.label)}</div>
+            <div class="report-val">${escapeHtml(r.value)}</div>
+          </div>`
+          )
+          .join('');
+        det.innerHTML = `<summary>${sec} (${report.sections[sec].length})</summary>${rowsHtml}`;
+        el.reportSections.appendChild(det);
+      });
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // ---------- Strip / Edit Metadata via Vercel Node.js API (+ lossless fallback) ----------
+  async function processSingleFile(entry) {
+    if (state.mode === 'edit' || state.mode === 'geo') {
+      // Ensure PNG bytes for clean custom PNG metadata write
+      const pngBytes = await ensurePngBytes(entry);
+      const fields =
+        state.mode === 'geo'
+          ? {
+              'GPSLatitude': el.geoLat.value,
+              'GPSLongitude': el.geoLng.value,
+              'Location': el.geoPlace.value
+            }
+          : {
+              Title: el.editTitle.value,
+              Author: el.editAuthor.value,
+              Copyright: el.editCopyright.value,
+              Software: el.editSoftware.value,
+              Description: el.editDesc.value
+            };
+      const editedBytes = window.FootprintEngine.writePngMetadata(pngBytes, fields);
+      const after = window.FootprintEngine.inspectBytes(editedBytes);
+      entry.cleanBytes = editedBytes;
+      entry.format = 'PNG';
+      entry.mime = 'image/png';
+      entry.afterReport = after.report;
+      entry.cleaned = true;
+      entry.cleanUrl = URL.createObjectURL(new Blob([editedBytes], { type: 'image/png' }));
+      return;
+    }
+
+    // Background Vercel Node.js API call for lossless metadata removal
+    if (entry.bytes.length <= 3 * 1024 * 1024) {
+      try {
+        const resp = await fetch(VERCEL_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'strip-metadata',
+            fileBase64: bytesToBase64(entry.bytes, entry.mime)
+          })
+        });
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json.ok && json.cleanBase64) {
+            entry.cleanBytes = base64ToUint8(json.cleanBase64);
+            entry.afterReport = json.afterReport;
+            entry.cleaned = true;
+            entry.cleanUrl = URL.createObjectURL(new Blob([entry.cleanBytes], { type: entry.mime }));
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Vercel API fallback to local lossless stripper:', err);
+      }
+    }
+
+    // Instant lossless fallback
+    const stripped = window.FootprintEngine.stripBytes(entry.bytes);
+    entry.cleanBytes = stripped.cleanBytes;
+    entry.afterReport = stripped.afterReport;
+    entry.cleaned = true;
+    entry.cleanUrl = URL.createObjectURL(new Blob([entry.cleanBytes], { type: entry.mime }));
+  }
+
+  async function ensurePngBytes(entry) {
+    if (entry.format === 'PNG') return entry.bytes;
+    const img = new Image();
+    img.src = entry.url;
+    await new Promise((res) => (img.onload = res));
+    const c = document.createElement('canvas');
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    c.getContext('2d').drawImage(img, 0, 0);
+    const blob = await new Promise((res) => c.toBlob(res, 'image/png'));
+    return new Uint8Array(await blob.arrayBuffer());
+  }
+
+  function triggerDownload(entry) {
+    const a = document.createElement('a');
+    const dot = entry.name.lastIndexOf('.');
+    const base = dot > 0 ? entry.name.slice(0, dot) : entry.name;
+    const ext = entry.format === 'PNG' ? 'png' : entry.format === 'WEBP' ? 'webp' : 'jpg';
+    a.download = `${base}-clean.${ext}`;
+    a.href = entry.cleanUrl;
+    a.click();
+  }
+
+  el.removeMetadataBtn.addEventListener('click', async () => {
+    if (!state.files.length) return;
+    el.removeMetadataBtn.disabled = true;
+    el.primaryActionLabel.textContent = 'Cleaning...';
+    try {
+      for (const entry of state.files) {
+        await processSingleFile(entry);
+      }
+      renderBatchList();
+      renderSelectedMetadata();
+      showToast('All AI & photo metadata stripped cleanly!');
+    } finally {
+      el.removeMetadataBtn.disabled = false;
+      el.primaryActionLabel.textContent =
+        state.mode === 'edit'
+          ? 'Strip AI & Save Metadata'
+          : state.mode === 'geo'
+            ? 'Apply Clean Geo Tag'
+            : I18N[state.lang].removeBtn;
+    }
+  });
+
+  el.downloadAllBtn.addEventListener('click', () => {
+    state.files.filter((f) => f.cleaned).forEach((f) => triggerDownload(f));
+  });
+
+  // Upload Events
+  el.uploadButton.addEventListener('click', (e) => {
     e.stopPropagation();
     el.fileInput.click();
   });
-
-  el.tryDemoBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    loadDemoImage();
-  });
-
-  el.dropZone.addEventListener('click', () => el.fileInput.click());
-  el.dropZone.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      el.fileInput.click();
-    }
-  });
-
+  el.uploadZone.addEventListener('click', () => el.fileInput.click());
   el.fileInput.addEventListener('change', (e) => {
-    if (e.target.files[0]) handleImageFile(e.target.files[0]);
+    addFiles(e.target.files);
     e.target.value = '';
   });
-
-  el.dropZone.addEventListener('dragover', (e) => {
+  el.uploadCard.addEventListener('dragover', (e) => {
     e.preventDefault();
-    el.dropZone.classList.add('drag-over');
+    el.uploadCard.classList.add('drag-over');
   });
-
-  el.dropZone.addEventListener('dragleave', () => {
-    el.dropZone.classList.remove('drag-over');
-  });
-
-  el.dropZone.addEventListener('drop', (e) => {
+  el.uploadCard.addEventListener('dragleave', () => el.uploadCard.classList.remove('drag-over'));
+  el.uploadCard.addEventListener('drop', (e) => {
     e.preventDefault();
-    el.dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files[0]) handleImageFile(e.dataTransfer.files[0]);
+    el.uploadCard.classList.remove('drag-over');
+    addFiles(e.dataTransfer.files);
   });
 
-  window.addEventListener('paste', (e) => {
-    const items = e.clipboardData && e.clipboardData.items;
-    if (!items) return;
-    for (const item of items) {
-      if (item.type.startsWith('image/')) {
-        handleImageFile(item.getAsFile());
-        break;
-      }
-    }
+  // Sample AI Photo with real embedded AI metadata chunks for 1-click testing
+  el.samplePhotoBtn.addEventListener('click', async () => {
+    const c = document.createElement('canvas');
+    c.width = 640;
+    c.height = 420;
+    const ctx = c.getContext('2d');
+    const g = ctx.createLinearGradient(0, 0, 640, 420);
+    g.addColorStop(0, '#007365');
+    g.addColorStop(1, '#16211f');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, 640, 420);
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillText('Sample AI-Generated Image', 135, 200);
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.fillText('Contains embedded C2PA / Midjourney / DALL-E metadata', 105, 235);
+
+    const blob = await new Promise((res) => c.toBlob(res, 'image/png'));
+    const raw = new Uint8Array(await blob.arrayBuffer());
+    const withAiMeta = window.FootprintEngine.writePngMetadata(raw, {
+      Software: 'OpenAI DALL-E 3 / ChatGPT',
+      Description: 'Midjourney --v 6.1 --ar 3:2 cinematic landscape',
+      'XML:com.adobe.xmp': '<x:xmpmeta><rdf:Description iptcExt:DigitalSourceType="http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia" xmp:CreatorTool="ChatGPT C2PA Content Credentials"/></x:xmpmeta>',
+      Copyright: 'Generated with AI'
+    });
+    const sampleFile = new File([withAiMeta], 'sample-ai-photo.png', { type: 'image/png' });
+    addFiles([sampleFile]);
   });
 
-  el.newPhotoBtn.addEventListener('click', () => el.fileInput.click());
+  // ---------- Visual AI Text Cleaner Tool ----------
+  const cImgCtx = el.cImageCanvas.getContext('2d', { willReadFrequently: true });
+  const cMaskCtx = el.cMaskCanvas.getContext('2d', { willReadFrequently: true });
 
-  el.downloadBtn.addEventListener('click', () => {
-    const mime = el.exportFormat.value;
-    const ext = mime === 'image/jpeg' ? 'jpg' : mime === 'image/webp' ? 'webp' : 'png';
-    const link = document.createElement('a');
-    link.download = `${state.fileName}-clean.${ext}`;
-    link.href = el.imageCanvas.toDataURL(mime, 0.94);
-    link.click();
+  el.cChooseBtn.addEventListener('click', () => el.cFileInput.click());
+  el.cFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, 1400 / Math.max(img.naturalWidth, img.naturalHeight));
+      state.cW = Math.round(img.naturalWidth * scale);
+      state.cH = Math.round(img.naturalHeight * scale);
+      el.cImageCanvas.width = state.cW;
+      el.cImageCanvas.height = state.cH;
+      el.cMaskCanvas.width = state.cW;
+      el.cMaskCanvas.height = state.cH;
+      cImgCtx.drawImage(img, 0, 0, state.cW, state.cH);
+      cMaskCtx.clearRect(0, 0, state.cW, state.cH);
+      state.cImgData = cImgCtx.getImageData(0, 0, state.cW, state.cH);
+      el.cPlaceholder.classList.add('hidden');
+      el.cCanvasWrap.classList.remove('hidden');
+      el.cRemoveBtn.disabled = false;
+      el.cDownloadBtn.classList.add('hidden');
+    };
+    img.src = URL.createObjectURL(file);
   });
 
-  // Tools
-  el.toolBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      el.toolBtns.forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.tool = btn.dataset.tool;
-      el.brushSizeGroup.style.opacity = state.tool === 'rect' ? '0.4' : '1';
-      el.maskCanvas.style.cursor = state.tool === 'rect' ? 'crosshair' : 'none';
+  el.cTools.forEach((b) => {
+    b.addEventListener('click', () => {
+      el.cTools.forEach((x) => x.classList.remove('active'));
+      b.classList.add('active');
+      state.cTool = b.dataset.ctool;
     });
   });
 
-  el.brushSize.addEventListener('input', () => {
-    state.brushSize = Number(el.brushSize.value);
-    el.brushSizeVal.textContent = `${state.brushSize}px`;
-  });
+  function cCoords(e) {
+    const r = el.cMaskCanvas.getBoundingClientRect();
+    return {
+      x: ((e.clientX - r.left) / r.width) * state.cW,
+      y: ((e.clientY - r.top) / r.height) * state.cH
+    };
+  }
 
-  el.presetBtns.forEach((btn) => {
-    btn.addEventListener('click', () => applyCornerPreset(btn.dataset.corner));
-  });
-
-  // Mask Pointer Events
-  el.maskCanvas.addEventListener('pointerdown', (e) => {
-    if (state.compareActive) return;
-    el.maskCanvas.setPointerCapture(e.pointerId);
-    pushMaskHistory();
-    state.isDrawing = true;
-    const pt = getCanvasCoords(e.clientX, e.clientY);
-
-    if (state.tool === 'rect') {
-      state.rectStart = { clientX: e.clientX, clientY: e.clientY, pt };
-      el.rectPreview.classList.remove('hidden');
+  el.cMaskCanvas.addEventListener('pointerdown', (e) => {
+    el.cMaskCanvas.setPointerCapture(e.pointerId);
+    state.cDrawing = true;
+    const pt = cCoords(e);
+    if (state.cTool === 'rect') {
+      state.cRectStart = pt;
     } else {
-      state.lastPt = pt;
-      drawBrushStroke(pt, pt);
+      state.cLastPt = pt;
+      drawCMask(pt, pt);
     }
   });
 
-  el.maskCanvas.addEventListener('pointermove', (e) => {
-    updateBrushCursor(e.clientX, e.clientY);
-    if (!state.isDrawing) return;
+  el.cMaskCanvas.addEventListener('pointermove', (e) => {
+    if (!state.cDrawing || state.cTool === 'rect') return;
+    const pt = cCoords(e);
+    drawCMask(state.cLastPt, pt);
+    state.cLastPt = pt;
+  });
 
-    const pt = getCanvasCoords(e.clientX, e.clientY);
-    if (state.tool === 'rect' && state.rectStart) {
-      const wrapRect = el.canvasWrapper.getBoundingClientRect();
-      const x1 = e.clientX - wrapRect.left;
-      const y1 = e.clientY - wrapRect.top;
-      const x0 = state.rectStart.clientX - wrapRect.left;
-      const y0 = state.rectStart.clientY - wrapRect.top;
-
-      el.rectPreview.style.left = `${Math.min(x0, x1)}px`;
-      el.rectPreview.style.top = `${Math.min(y0, y1)}px`;
-      el.rectPreview.style.width = `${Math.abs(x1 - x0)}px`;
-      el.rectPreview.style.height = `${Math.abs(y1 - y0)}px`;
-    } else if (state.lastPt) {
-      drawBrushStroke(state.lastPt, pt);
-      state.lastPt = pt;
+  el.cMaskCanvas.addEventListener('pointerup', (e) => {
+    if (!state.cDrawing) return;
+    state.cDrawing = false;
+    if (state.cTool === 'rect' && state.cRectStart) {
+      const end = cCoords(e);
+      cMaskCtx.fillStyle = '#ff3d3d';
+      cMaskCtx.fillRect(
+        Math.min(state.cRectStart.x, end.x),
+        Math.min(state.cRectStart.y, end.y),
+        Math.abs(end.x - state.cRectStart.x),
+        Math.abs(end.y - state.cRectStart.y)
+      );
+      state.cRectStart = null;
     }
   });
 
-  el.maskCanvas.addEventListener('pointerup', (e) => {
-    if (!state.isDrawing) return;
-    state.isDrawing = false;
-
-    if (state.tool === 'rect' && state.rectStart) {
-      const endPt = getCanvasCoords(e.clientX, e.clientY);
-      const x = Math.min(state.rectStart.pt.x, endPt.x);
-      const y = Math.min(state.rectStart.pt.y, endPt.y);
-      const w = Math.abs(endPt.x - state.rectStart.pt.x);
-      const h = Math.abs(endPt.y - state.rectStart.pt.y);
-      if (w > 2 && h > 2) {
-        maskCtx.save();
-        maskCtx.fillStyle = '#f43f5e';
-        maskCtx.fillRect(x, y, w, h);
-        maskCtx.restore();
-      }
-      el.rectPreview.classList.add('hidden');
-      state.rectStart = null;
+  function drawCMask(p1, p2) {
+    cMaskCtx.save();
+    cMaskCtx.lineCap = 'round';
+    cMaskCtx.lineWidth = Number(el.cBrushSize.value);
+    if (state.cTool === 'eraser') {
+      cMaskCtx.globalCompositeOperation = 'destination-out';
+      cMaskCtx.strokeStyle = 'rgba(0,0,0,1)';
+    } else {
+      cMaskCtx.strokeStyle = '#ff3d3d';
     }
-    state.lastPt = null;
-    updateButtonsState();
+    cMaskCtx.beginPath();
+    cMaskCtx.moveTo(p1.x, p1.y);
+    cMaskCtx.lineTo(p2.x + 0.01, p2.y);
+    cMaskCtx.stroke();
+    cMaskCtx.restore();
+  }
+
+  el.cCornerBrBtn.addEventListener('click', () => {
+    if (!state.cW) return;
+    cMaskCtx.fillStyle = '#ff3d3d';
+    const bw = Math.min(240, state.cW * 0.25);
+    const bh = Math.min(90, state.cH * 0.14);
+    cMaskCtx.fillRect(state.cW - bw - 10, state.cH - bh - 10, bw, bh);
   });
 
-  el.maskCanvas.addEventListener('pointerleave', () => {
-    el.brushCursor.classList.add('hidden');
+  el.cClearBtn.addEventListener('click', () => {
+    cMaskCtx.clearRect(0, 0, state.cW, state.cH);
   });
 
-  // Actions
-  el.removeBtn.addEventListener('click', runRemoval);
+  el.cRemoveBtn.addEventListener('click', async () => {
+    if (!state.cW) return;
+    el.cRemoveBtn.disabled = true;
+    const mImg = cMaskCtx.getImageData(0, 0, state.cW, state.cH);
+    const maskAlpha = new Uint8Array(state.cW * state.cH);
+    for (let i = 0; i < maskAlpha.length; i++) maskAlpha[i] = mImg.data[i * 4 + 3];
 
-  el.undoMaskBtn.addEventListener('click', () => {
-    const prev = state.maskHistory.pop();
-    if (prev) maskCtx.putImageData(prev, 0, 0);
-    updateButtonsState();
-  });
-
-  el.clearMaskBtn.addEventListener('click', () => {
-    pushMaskHistory();
-    maskCtx.clearRect(0, 0, state.imgW, state.imgH);
-    updateButtonsState();
-  });
-
-  el.resetImgBtn.addEventListener('click', () => {
-    if (!state.originalImageData) return;
-    state.currentImageData = new ImageData(
-      new Uint8ClampedArray(state.originalImageData.data),
-      state.imgW,
-      state.imgH
-    );
-    imgCtx.putImageData(state.currentImageData, 0, 0);
-    state.hasCleaned = false;
-    setCompareMode(false);
-    updateButtonsState();
-  });
-
-  // Zoom
-  el.zoomInBtn.addEventListener('click', () => {
-    state.zoom = Math.min(3, state.zoom + 0.15);
-    applyZoom();
-  });
-  el.zoomOutBtn.addEventListener('click', () => {
-    state.zoom = Math.max(0.2, state.zoom - 0.15);
-    applyZoom();
-  });
-  el.zoomFitBtn.addEventListener('click', fitZoomToViewport);
-
-  // Compare
-  el.compareBtn.addEventListener('click', () => {
-    setCompareMode(!state.compareActive);
-  });
-
-  el.holdOriginalBtn.addEventListener('pointerdown', () => {
-    if (!state.hasCleaned) return;
-    imgCtx.putImageData(state.originalImageData, 0, 0);
-  });
-  const restoreCurrent = () => {
-    if (state.hasCleaned && state.currentImageData) {
-      imgCtx.putImageData(state.currentImageData, 0, 0);
-    }
-  };
-  el.holdOriginalBtn.addEventListener('pointerup', restoreCurrent);
-  el.holdOriginalBtn.addEventListener('pointerleave', restoreCurrent);
-
-  el.compareDivider.addEventListener('pointerdown', (e) => {
-    state.isComparingDrag = true;
-    el.compareDivider.setPointerCapture(e.pointerId);
-  });
-  window.addEventListener('pointermove', (e) => {
-    if (!state.isComparingDrag) return;
-    const rect = el.canvasWrapper.getBoundingClientRect();
-    state.compareSplit = (e.clientX - rect.left) / rect.width;
-    updateCompareClip();
-  });
-  window.addEventListener('pointerup', () => {
-    state.isComparingDrag = false;
-  });
-
-  // Language toggle
-  el.langToggleBtn.addEventListener('click', () => {
-    state.lang = state.lang === 'en' ? 'bn' : 'en';
-    applyLanguage();
-  });
-
-  // Keyboard shortcuts
-  window.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT') return;
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
-      e.preventDefault();
-      el.undoMaskBtn.click();
-    } else if (e.key === '[') {
-      el.brushSize.value = Math.max(6, state.brushSize - 6);
-      el.brushSize.dispatchEvent(new Event('input'));
-    } else if (e.key === ']') {
-      el.brushSize.value = Math.min(140, state.brushSize + 6);
-      el.brushSize.dispatchEvent(new Event('input'));
+    try {
+      const cleaned = await window.CleanPixelInpainter.inpaintImage(state.cImgData, maskAlpha, { mode: 'smart' });
+      state.cImgData = cleaned;
+      cImgCtx.putImageData(cleaned, 0, 0);
+      cMaskCtx.clearRect(0, 0, state.cW, state.cH);
+      el.cDownloadBtn.classList.remove('hidden');
+      showToast('Visual watermark / text cleaned!');
+    } catch (err) {
+      showToast(err.message);
+    } finally {
+      el.cRemoveBtn.disabled = false;
     }
   });
 
-  // Init
-  applyLanguage();
+  el.cDownloadBtn.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.download = 'cleaned-visual.png';
+    a.href = el.cImageCanvas.toDataURL('image/png');
+    a.click();
+  });
+
+  // ---------- Video Container Scanner ----------
+  el.videoChooseBtn.addEventListener('click', () => el.videoInput.click());
+  el.videoInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const slice = new Uint8Array(await file.slice(0, 512 * 1024).arrayBuffer());
+    const text = new TextDecoder('utf-8', { fatal: false }).decode(slice).replace(/[^\x20-\x7E]+/g, ' ');
+    const found = [];
+    if (/c2pa|jumbf/i.test(text)) found.push('C2PA / Content Credentials');
+    if (/sora|openai/i.test(text)) found.push('OpenAI / Sora');
+    if (/runway|kling|luma|midjourney/i.test(text)) found.push('AI Video Generator Tag');
+    if (/lavf|ffmpeg/i.test(text)) found.push('FFmpeg / Lavf Encoder');
+
+    el.videoScanResult.classList.remove('hidden');
+    el.videoScanResult.innerHTML = `
+      <strong>${escapeHtml(file.name)}</strong> (${formatBytes(file.size)})<br/>
+      ${found.length ? `Detected container signals: <strong>${found.join(', ')}</strong>` : 'No C2PA/AI header strings found in first 512KB.'}
+    `;
+  });
+
+  applyLang();
 })();
