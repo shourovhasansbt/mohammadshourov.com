@@ -4,6 +4,7 @@
   "private": true,
   "description": "Node.js Serverless API on Vercel for CleanPixel AI Photo Label Remover",
   "dependencies": {
+    "docx": "^9.16.1",
     "pngjs": "^7.0.0"
   }
 }
